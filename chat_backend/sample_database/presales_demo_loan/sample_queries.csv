@@ -1,0 +1,248 @@
+sno,question,question_category,query,logic,response,chart
+1,How is the monthly loan disbursement trending across education levels for each gender?,not_order_by,"SELECT
+strftime('%m', effective_date) as loan_month,
+education,
+Gender,
+COUNT(*) as total_loans,
+SUM(Principal) as total_amount
+FROM loan_payments loans
+GROUP BY
+strftime('%m', effective_date),
+education,
+Gender
+ORDER BY loan_month;","This query analyzes monthly loan disbursement patterns across education levels and gender, providing insights into demographic lending trends and potential seasonal patterns.",The monthly loan disbursement trends across education levels and gender are displayed below.,"{ 'type': 'line', 'x_axis': ['loan_month'], 'y_axis': ['total_amount'], 'group_by': ['education', 'Gender'], 'logic': 'A multi-line chart shows trends over time with separate lines for each education-gender combination.' }"
+2,What is the age-based risk analysis of loan repayment patterns?,not_order_by,"SELECT
+CASE
+WHEN age < 25 THEN '18-24'
+WHEN age < 35 THEN '25-34'
+WHEN age < 45 THEN '35-44'
+ELSE '45+'
+END as age_group,
+loan_status,
+COUNT(*) as loan_count,
+AVG(Principal) as avg_loan_amount,
+AVG(CASE WHEN past_due_days IS NOT NULL THEN past_due_days ELSE 0 END) as avg_delay
+FROM loan_payments loans
+GROUP BY
+CASE
+WHEN age < 25 THEN '18-24'
+WHEN age < 35 THEN '25-34'
+WHEN age < 45 THEN '35-44'
+ELSE '45+'
+END,
+loan_status;","This query provides a comprehensive risk assessment based on age groups, showing repayment status distribution and average delays in payment.",The age-based loan repayment risk analysis is displayed below.,"{ 'type': 'heatmap', 'x_axis': ['age_group'], 'y_axis': ['loan_status'], 'color': ['loan_count'], 'logic': 'A heatmap effectively shows the distribution of loan status across age groups.' }"
+3,How does education level impact early repayment behavior?,not_order_by,"SELECT
+    education,
+    COUNT(*) as total_loans,
+    SUM(CASE WHEN paid_off_time < due_date THEN 1 ELSE 0 END) as early_payments,
+    AVG(CASE WHEN paid_off_time < due_date THEN julianday(due_date) - julianday(paid_off_time) ELSE 0 END) as avg_days_early,
+    AVG(Principal) as avg_loan_amount
+FROM loan_payments loans
+GROUP BY education
+ORDER BY early_payments DESC;
+","This query examines the relationship between education levels and early repayment behavior, providing insights into financial discipline across educational backgrounds.",The analysis of education level impact on early repayment behavior is displayed below.,"{ 'type': 'bar', 'x_axis': ['education'], 'y_axis': ['early_payments', 'avg_days_early'], 'logic': 'A grouped bar chart shows early payment patterns across education levels.' }"
+4,What is the daily loan approval and disbursement pattern?,not_order_by,"SELECT
+    strftime('%w', effective_date) as day_of_week,
+    COUNT(*) as total_loans,
+    SUM(Principal) as total_amount,
+    AVG(Principal) as avg_loan_size
+FROM loan_payments loans
+GROUP BY strftime('%w', effective_date)
+ORDER BY day_of_week;
+","This query analyzes daily patterns in loan approvals and disbursements, helping identify peak operational days and average loan sizes by day of week.",The daily loan approval and disbursement patterns are displayed below.,"{ 'type': 'mixed', 'x_axis': ['day_of_week'], 'y_axis': ['total_loans', 'avg_loan_size'], 'logic': 'A combination of bars and line shows daily patterns in loan volumes and sizes.' }"
+5,How do loan terms vary across different demographic segments?,not_order_by,"SELECT
+Gender,
+education,
+terms,
+COUNT(*) as loan_count,
+AVG(Principal) as avg_amount,
+SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as success_rate
+FROM loan_payments loans
+GROUP BY
+Gender,
+education,
+terms
+ORDER BY
+terms,
+success_rate DESC;","This query examines loan term preferences across demographic segments, showing how different groups choose loan durations and their success rates.",The analysis of loan terms across demographic segments is displayed below.,"{ 'type': 'stacked_bar', 'x_axis': ['Gender', 'education'], 'y_axis': ['loan_count'], 'stack': ['terms'], 'logic': 'A stacked bar chart shows the distribution of loan terms across demographics.' }"
+6,What is the correlation between loan amount and repayment speed?,not_order_by,"SELECT
+    CASE
+        WHEN Principal <= 1000 THEN 'Small'
+        WHEN Principal <= 2000 THEN 'Medium'
+        ELSE 'Large'
+    END as loan_size,
+    AVG(julianday(paid_off_time) - julianday(effective_date)) as avg_days_to_repay,
+    COUNT(*) as loan_count,
+    SUM(CASE WHEN paid_off_time < due_date THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as early_payment_rate
+FROM loan_payments loans
+WHERE loan_status = 'PAIDOFF'
+GROUP BY
+    CASE
+        WHEN Principal <= 1000 THEN 'Small'
+        WHEN Principal <= 2000 THEN 'Medium'
+        ELSE 'Large'
+    END;
+","This query analyzes how loan amounts correlate with repayment behavior, providing insights into optimal loan sizing strategies.",The correlation between loan amount and repayment speed is displayed below.,"{ 'type': 'scatter', 'x_axis': ['loan_size'], 'y_axis': ['avg_days_to_repay'], 'size': ['loan_count'], 'logic': 'A bubble scatter plot shows relationship between loan size and repayment time.' }"
+7,How do seasonal patterns affect loan demand across demographics?,not_order_by,"SELECT
+strftime('%m', effective_date) as month,
+Gender,
+education,
+COUNT(*) as loan_count,
+AVG(Principal) as avg_amount,
+SUM(Principal) as total_amount
+FROM loan_payments loans
+GROUP BY
+strftime('%m', effective_date),
+Gender,
+education
+ORDER BY
+month,
+total_amount DESC;","This query identifies seasonal patterns in loan demand across different demographic segments, helping understand timing preferences.",The seasonal patterns in loan demand across demographics are displayed below.,"{ 'type': 'area', 'x_axis': ['month'], 'y_axis': ['loan_count'], 'stack': ['Gender', 'education'], 'logic': 'A stacked area chart shows seasonal patterns with demographic breakdowns.' }"
+8,What is the risk profile of different education-age combinations?,not_order_by,"SELECT
+education,
+CASE
+WHEN age < 30 THEN '18-29'
+WHEN age < 40 THEN '30-39'
+ELSE '40+'
+END as age_group,
+COUNT(*) as total_loans,
+SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as success_rate,
+AVG(CASE WHEN past_due_days IS NOT NULL THEN past_due_days ELSE 0 END) as avg_delay,
+AVG(Principal) as avg_loan_amount
+FROM loan_payments loans
+GROUP BY
+education,
+CASE
+WHEN age < 30 THEN '18-29'
+WHEN age < 40 THEN '30-39'
+ELSE '40+'
+END;","This query creates detailed risk profiles based on education and age combinations, helping identify high-performing demographic segments.",The risk profiles for different education-age combinations are displayed below.,"{ 'type': 'matrix', 'x_axis': ['education'], 'y_axis': ['age_group'], 'color': ['success_rate'], 'logic': 'A matrix visualization shows risk levels across education-age combinations.' }"
+9,How does repayment behavior change with loan duration?,not_order_by,"SELECT
+    terms,
+    COUNT(*) as total_loans,
+    AVG(julianday(paid_off_time) - julianday(effective_date)) as avg_repayment_days,
+    SUM(CASE WHEN paid_off_time < due_date THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as early_payment_rate,
+    AVG(CASE WHEN past_due_days IS NOT NULL THEN past_due_days ELSE 0 END) as avg_delay
+FROM loan_payments loans
+GROUP BY terms
+ORDER BY terms;
+","This query analyzes how loan duration affects repayment behavior, including early payment rates and delays.",The analysis of repayment behavior changes with loan duration is displayed below.,"{ 'type': 'combo', 'x_axis': ['terms'], 'y_axis': ['avg_repayment_days', 'early_payment_rate'], 'logic': 'A combination chart shows multiple repayment metrics across loan terms.' }"
+10,What are the key performance indicators by gender and education?,not_order_by,"SELECT
+    Gender,
+    education,
+    COUNT(*) as total_loans,
+    AVG(Principal) as avg_loan_amount,
+    SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as success_rate,
+    AVG(CASE WHEN paid_off_time < due_date THEN 1 ELSE 0 END) * 100.0 as early_payment_rate,
+    AVG(julianday(paid_off_time) - julianday(effective_date)) as avg_days_to_repay
+FROM loan_payments loans
+GROUP BY
+    Gender,
+    education
+ORDER BY
+    success_rate DESC;
+","This query calculates comprehensive KPIs across gender and education segments, providing a holistic view of portfolio performance.",The key performance indicators by gender and education are displayed below.,"{ 'type': 'radar', 'dimensions': ['success_rate', 'early_payment_rate', 'avg_days_to_repay'], 'groups': ['Gender', 'education'], 'logic': 'A radar chart effectively shows multiple KPIs across segments.' }"
+11,How do loan amounts cluster by age and education?,not_order_by,"SELECT
+    education,
+    CASE
+        WHEN age < 25 THEN '18-24'
+        WHEN age < 35 THEN '25-34'
+        WHEN age < 45 THEN '35-44'
+        ELSE '45+'
+    END as age_group,
+    COUNT(*) as loan_count,
+    AVG(Principal) as avg_amount,
+    -- Standard deviation calculation
+    SQRT(
+        AVG(Principal * Principal) - AVG(Principal) * AVG(Principal)
+    ) as amount_deviation
+FROM loan_payments loans
+GROUP BY
+    education,
+    CASE
+        WHEN age < 25 THEN '18-24'
+        WHEN age < 35 THEN '25-34'
+        WHEN age < 45 THEN '35-44'
+        ELSE '45+'
+    END;
+","This query identifies patterns in loan amount distribution across age and education segments, helping understand customer borrowing preferences.",The clustering analysis of loan amounts by age and education is displayed below.,"{ 'type': 'bubble', 'x_axis': ['age_group'], 'y_axis': ['avg_amount'], 'size': ['loan_count'], 'color': ['education'], 'logic': 'A bubble chart shows clustering of loan amounts across segments.' }"
+12,What is the weekly trend of loan approvals and repayments?,not_order_by,"SELECT
+    strftime('%Y', effective_date) || '-' || strftime('%W', effective_date) as loan_week,
+    COUNT(*) as new_loans,
+    SUM(Principal) as total_disbursed,
+    SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) as loans_paid,
+    AVG(CASE WHEN loan_status = 'PAIDOFF' THEN Principal ELSE NULL END) as avg_paid_amount
+FROM loan_payments loans
+GROUP BY
+    strftime('%Y', effective_date), strftime('%W', effective_date)
+ORDER BY loan_week;
+","This query analyzes weekly patterns in loan approvals and repayments, helping identify operational trends and seasonal effects.",The weekly trend analysis of loan approvals and repayments is displayed below.,"{ 'type': 'line', 'x_axis': ['loan_week'], 'y_axis': ['new_loans', 'loans_paid'], 'logic': 'A multi-line chart shows weekly trends in loan lifecycle.' }"
+13,How does credit risk vary by demographic segment?,not_order_by,"SELECT
+Gender,
+education,
+CASE
+WHEN age < 30 THEN '18-29'
+WHEN age < 40 THEN '30-39'
+ELSE '40+'
+END as age_group,
+COUNT(*) as total_loans,
+SUM(CASE WHEN past_due_days IS NOT NULL THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as default_rate,
+AVG(CASE WHEN past_due_days IS NOT NULL THEN past_due_days ELSE 0 END) as avg_delay
+FROM loan_payments loans
+GROUP BY
+Gender,
+education,
+CASE
+WHEN age < 30 THEN '18-29'
+WHEN age < 40 THEN '30-39'
+ELSE '40+'
+END;",This query assesses credit risk across demographic segments using default rates and payment delays as risk indicators.,The credit risk analysis by demographic segment is displayed below.,"{ 'type': 'heatmap', 'x_axis': ['education', 'age_group'], 'y_axis': ['Gender'], 'color': ['default_rate'], 'logic': 'A heatmap shows risk levels across demographic combinations.' }"
+14,What is the impact of loan size on repayment success?,not_order_by,"SELECT
+    CASE
+        WHEN Principal <= 1000 THEN 'Small (<= 1000)'
+        WHEN Principal <= 2000 THEN 'Medium (1001-2000)'
+        ELSE 'Large (> 2000)'
+    END as loan_size,
+    COUNT(*) as total_loans,
+    SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as success_rate,
+    AVG(CASE WHEN loan_status = 'PAIDOFF' THEN julianday(paid_off_time) - julianday(effective_date) ELSE NULL END) as avg_days_to_repay
+FROM loan_payments loans
+GROUP BY
+    CASE
+        WHEN Principal <= 1000 THEN 'Small (<= 1000)'
+        WHEN Principal <= 2000 THEN 'Medium (1001-2000)'
+        ELSE 'Large (> 2000)'
+    END;
+","This query analyzes how loan size affects repayment success and time to repayment, helping optimize loan amount offerings.",The analysis of loan size impact on repayment success is displayed below.,"{ 'type': 'column', 'x_axis': ['loan_size'], 'y_axis': ['success_rate', 'avg_days_to_repay'], 'logic': 'A column chart shows success metrics across loan size categories.' }"
+15,What is the impact of borrower age on loan amount?,not_order_by,"SELECT
+CASE
+WHEN age < 25 THEN '18-24'
+WHEN age < 35 THEN '25-34'
+WHEN age < 45 THEN '35-44'
+ELSE '45+'
+END as age_group,
+AVG(Principal) as avg_loan_amount,
+COUNT(*) as loan_count
+FROM loan_payments loans
+GROUP BY
+CASE
+WHEN age < 25 THEN '18-24'
+WHEN age < 35 THEN '25-34'
+WHEN age < 45 THEN '35-44'
+ELSE '45+'
+END;","This query examines the relationship between age groups and average loan amounts, revealing borrowing tendencies.",The impact of borrower age on loan amount is displayed below.,"{ 'type': 'bar', 'x_axis': ['age_group'], 'y_axis': ['avg_loan_amount'], 'logic': 'A bar chart shows average loan amounts across age groups.' }"
+16,How does gender affect repayment delay patterns?,not_order_by,"SELECT Gender, AVG(CASE WHEN past_due_days IS NOT NULL THEN past_due_days ELSE 0 END) as avg_delay, COUNT(*) as total_loans FROM loan_payments loans GROUP BY Gender;","This query assesses repayment delay patterns by gender, highlighting potential behavioral differences.",The gender-based repayment delay patterns are displayed below.,"{ 'type': 'column', 'x_axis': ['Gender'], 'y_axis': ['avg_delay'], 'logic': 'A column chart visualizes repayment delays for each gender.' }"
+17,What is the relationship between education level and loan amount?,not_order_by,"SELECT education, AVG(Principal) as avg_loan_amount, COUNT(*) as total_loans FROM loan_payments loans GROUP BY education; ","This query explores how education levels influence loan amounts, identifying financial capability variations.",The relationship between education level and loan amount is displayed below.,"{ 'type': 'bar', 'x_axis': ['education'], 'y_axis': ['avg_loan_amount'], 'logic': 'A bar chart shows the average loan amount by education level.' }"
+18,How do loan repayment times vary by education level?,not_order_by,"SELECT education, AVG(julianday(paid_off_time) - julianday(effective_date)) as avg_repayment_days, COUNT(*) as total_loans FROM loan_payments loans WHERE loan_status = 'PAIDOFF' GROUP BY education; ","This query analyzes how education level influences repayment duration, revealing financial responsibility trends.",The variation in loan repayment time by education level is displayed below.,"{ 'type': 'column', 'x_axis': ['education'], 'y_axis': ['avg_repayment_days'], 'logic': 'A column chart shows the average repayment duration across education levels.' }"
+19,What is the average loan term preference by gender?,not_order_by,"SELECT Gender, AVG(terms) as avg_loan_term, COUNT(*) as total_loans FROM loan_payments loans GROUP BY Gender;","This query examines gender-based preferences for loan terms, helping understand borrowing habits.",The average loan term preference by gender is displayed below.,"{ 'type': 'bar', 'x_axis': ['Gender'], 'y_axis': ['avg_loan_term'], 'logic': 'A bar chart shows the preferred loan term duration by gender.' }"
+20,What is the success rate of different loan terms?,not_order_by,"SELECT terms, SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as success_rate, COUNT(*) as total_loans FROM loan_payments loans GROUP BY terms;","This query determines loan performance based on term duration, identifying optimal lending strategies.",The success rate of different loan terms is displayed below.,"{ 'type': 'column', 'x_axis': ['terms'], 'y_axis': ['success_rate'], 'logic': 'A column chart shows success rates for different loan terms.' }"
+21,How does loan amount distribution vary by gender?,not_order_by,"SELECT Gender, AVG(Principal) as avg_loan_amount, SQRT(AVG(Principal * Principal) - AVG(Principal) * AVG(Principal)) as loan_variation, COUNT(*) as total_loans FROM loan_payments loans GROUP BY Gender;","This query analyzes how loan amount distribution differs between genders, highlighting financial trends.",The loan amount distribution by gender is displayed below.,"{ 'type': 'boxplot', 'x_axis': ['Gender'], 'y_axis': ['avg_loan_amount'], 'logic': 'A boxplot shows the spread of loan amounts by gender.' }"
+22,What are the most common loan amounts and their repayment success?,not_order_by,"SELECT Principal, COUNT(*) as frequency, SUM(CASE WHEN loan_status = 'PAIDOFF' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as success_rate FROM loan_payments loans GROUP BY Principal ORDER BY frequency DESC;",This query identifies the most frequently issued loan amounts and their repayment success rates.,The most common loan amounts and their repayment success are displayed below.,"{ 'type': 'scatter', 'x_axis': ['Principal'], 'y_axis': ['frequency'], 'size': ['success_rate'], 'logic': 'A scatter plot shows loan frequency vs. success rates.' }"
+23,How do different age groups prefer loan terms?,not_order_by,"SELECT CASE WHEN age < 25 THEN '18-24' WHEN age < 35 THEN '25-34' WHEN age < 45 THEN '35-44' ELSE '45+' END as age_group, AVG(terms) as avg_loan_term, COUNT(*) as total_loans FROM loan_payments loans GROUP BY CASE WHEN age < 25 THEN '18-24' WHEN age < 35 THEN '25-34' WHEN age < 45 THEN '35-44' ELSE '45+' END;","This query explores loan term preferences by age group, providing insights into borrowing behavior.",The loan term preferences by age group are displayed below.,"{ 'type': 'bar', 'x_axis': ['age_group'], 'y_axis': ['avg_loan_term'], 'logic': 'A bar chart shows average loan term preferences by age group.' }"
+24,What is the impact of overdue payments on future borrowing?,not_order_by,"SELECT Gender, education, AVG(past_due_days) as avg_overdue_days, COUNT(*) as total_loans FROM loan_payments loans WHERE past_due_days IS NOT NULL GROUP BY Gender, education;",This query assesses how past due payments affect future borrowing trends across demographics.,The impact of overdue payments on future borrowing is displayed below.,"{ 'type': 'heatmap', 'x_axis': ['education'], 'y_axis': ['Gender'], 'color': ['avg_overdue_days'], 'logic': 'A heatmap shows overdue trends across gender and education.' }"
+25,How does loan size affect interest in different loan terms?,not_order_by,"SELECT CASE WHEN Principal <= 1000 THEN 'Small' WHEN Principal <= 2000 THEN 'Medium' ELSE 'Large' END as loan_size, terms, COUNT(*) as loan_count FROM loan_payments loans GROUP BY CASE WHEN Principal <= 1000 THEN 'Small' WHEN Principal <= 2000 THEN 'Medium' ELSE 'Large' END, terms ORDER BY loan_size, terms;","This query analyzes how loan amount influences term selection, helping understand borrower preferences.",The loan size preference for different terms is displayed below.,"{ 'type': 'stacked_bar', 'x_axis': ['loan_size'], 'y_axis': ['loan_count'], 'stack': ['terms'], 'logic': 'A stacked bar chart displays loan size preferences across different terms.' }"
+26,How does age impact early vs. late repayments?,not_order_by,"SELECT CASE WHEN age < 25 THEN '18-24' WHEN age < 35 THEN '25-34' WHEN age < 45 THEN '35-44' ELSE '45+' END as age_group, SUM(CASE WHEN paid_off_time < due_date THEN 1 ELSE 0 END) as early_repayments, SUM(CASE WHEN past_due_days IS NOT NULL THEN 1 ELSE 0 END) as late_repayments, COUNT(*) as total_loans FROM loan_payments loans GROUP BY CASE WHEN age < 25 THEN '18-24' WHEN age < 35 THEN '25-34' WHEN age < 45 THEN '35-44' ELSE '45+' END;","This query assesses how age affects early and late repayment behavior, providing insights into financial discipline.",The early vs. late repayment patterns by age group are displayed below.,"{ 'type': 'grouped_bar', 'x_axis': ['age_group'], 'y_axis': ['early_repayments', 'late_repayments'], 'logic': 'A grouped bar chart compares early and late repayments across age groups.' }"
+27,How do loan approvals vary by day of the week and gender?,not_order_by,"SELECT strftime('%w', effective_date) as day_of_week, Gender, COUNT(*) as total_loans FROM loan_payments loans GROUP BY strftime('%w', effective_date), Gender ORDER BY day_of_week;",This query identifies loan approval patterns across different days of the week and gender.,The loan approval trends by day of the week and gender are displayed below.,"{ 'type': 'heatmap', 'x_axis': ['day_of_week'], 'y_axis': ['Gender'], 'color': ['total_loans'], 'logic': 'A heatmap shows loan approvals distributed across days and gender.' }"
+28,What is the repayment delay distribution across different loan sizes?,not_order_by,"SELECT CASE WHEN Principal <= 1000 THEN 'Small' WHEN Principal <= 2000 THEN 'Medium' ELSE 'Large' END as loan_size, AVG(CASE WHEN past_due_days IS NOT NULL THEN past_due_days ELSE 0 END) as avg_delay, COUNT(*) as total_loans FROM loan_payments loans GROUP BY CASE WHEN Principal <= 1000 THEN 'Small' WHEN Principal <= 2000 THEN 'Medium' ELSE 'Large' END;","This query examines repayment delays across loan sizes, revealing financial risk patterns.",The repayment delay distribution across different loan sizes is displayed below.,"{ 'type': 'column', 'x_axis': ['loan_size'], 'y_axis': ['avg_delay'], 'logic': 'A column chart visualizes repayment delay distribution by loan size.' }"
+29,How does repayment speed vary between genders?,not_order_by,"SELECT Gender, AVG(julianday(paid_off_time) - julianday(effective_date)) as avg_repayment_days, COUNT(*) as total_loans FROM loan_payments loans WHERE loan_status = 'PAIDOFF' GROUP BY Gender;","This query assesses repayment behavior differences between genders, helping understand financial habits.",The repayment speed variations between genders are displayed below.,"{ 'type': 'bar', 'x_axis': ['Gender'], 'y_axis': ['avg_repayment_days'], 'logic': 'A bar chart visualizes the repayment speed differences between genders.' }"
+30,What is the impact of loan duration on default rates?,not_order_by,"SELECT terms, SUM(CASE WHEN past_due_days IS NOT NULL THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as default_rate, COUNT(*) as total_loans FROM loan_payments loans GROUP BY terms ORDER BY terms;","This query evaluates the relationship between loan duration and default risk, providing insights for lenders.",The impact of loan duration on default rates is displayed below.,"{ 'type': 'line', 'x_axis': ['terms'], 'y_axis': ['default_rate'], 'logic': 'A line chart visualizes default rates for different loan durations.' }"

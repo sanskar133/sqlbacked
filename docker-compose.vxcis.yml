@@ -1,0 +1,20 @@
+services:
+  chat_backend:
+    image: ${DOCKER_HUB_BACKEND_USER}/${REPO_BACKEND}:${TAG}
+    ports:
+      - 5000:5000
+    env_file:
+      - .env.backend
+    volumes:
+      - /etc/odbcinst.ini:/etc/odbcinst.ini:ro
+      - /etc/odbc.ini:/etc/odbc.ini:ro
+      - /opt/ibm/iaccess:/opt/ibm/iaccess:ro
+    environment:
+      - LD_LIBRARY_PATH=/opt/ibm/iaccess/lib64
+
+  fabric_analytics_frontend:
+    image: ${DOCKER_HUB_FRONTEND_USER}/${REPO_FRONTEND}:${TAG}
+    ports:
+      - 3002:3002
+    depends_on:
+      - chat_backend

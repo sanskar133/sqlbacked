@@ -1,0 +1,157 @@
+sno,question,question_category,query,logic,response,chart
+1,How is residential billed water usage trending for 2023,not_order_by,"select u.usage_period as UsagePeriod, sum(u.billing_usage) as BillingUsage from uusehst u join uservice s on u.service_id = s.service_id join usvctyp t on s.service_type = t.service_type join ublh b on u.bill_id = b.bhstr# join ucls c on b.bhscls = c.uccls where status_type = 'BILLED' and bhscrc not in ('C', 'S') and ucdes like '%Residential%' and left(usage_period,4) = 2023 and t.utility_type = 'W' group by u.usage_period","This query retrieves the residential billed water usage for 2023. It joins multiple tables ('uusehst', 'uservice', 'usvctyp', 'ublh', and 'ucls') to filter data based on billing status, service type, utility type, and description, grouping by the usage period for 2023.""",The residential billed water usage trend for 2023 is displayed below.,"{ 'type': 'line', 'x_axis': ['USAGEPERIOD'], 'y_axis': ['BILLINGUSAGE'], 'logic': 'A line chart is suitable for visualizing trends in water usage over time.' }"
+2,Compare 2023 and 2022 residential water revenue,not_order_by,"SELECT SUBSTR(bhsrym, 1, 4) AS YEAR, SUM(bhstot) AS BILLINGREVENUE FROM uusehst u JOIN uservice s ON u.service_id = s.service_id JOIN usvctyp t ON s.service_type = t.service_type JOIN ublh b ON u.bill_id = b.bhstr# JOIN ucls c ON b.bhscls = c.uccls WHERE status_type = 'BILLED' AND bhscrc NOT IN ('C', 'S') AND ucdes LIKE '%Residential%' AND t.utility_type = 'W' AND SUBSTR(bhsrym, 1, 4) IN ('2022', '2023') GROUP BY SUBSTR(bhsrym, 1, 4) ORDER BY SUBSTR(bhsrym, 1, 4)","This query compares residential water revenue for 2023 and 2022 by summing the 'bhstot' values, which represent billing revenue. The query filters data based on billing status, service type, and utility type, grouping by year.",The comparison of residential water revenue for the years 2023 and 2022 is displayed below.,"{ 'type': 'bar', 'x_axis': ['YEAR'], 'y_axis': ['BILLINGREVENUE'], 'logic': 'A bar chart is ideal for visualizing the comparison of water revenue across two years.' }"
+3,Show me the total number of active premises by District and Route.,not_order_by,"select UPRM.UPDST as District, UPRM.UPRTE as Route, URTE.UBDSC as RouteDescription, count(UPRM.UPPRM) as TotalPremises from UPRM inner join URTE on UPRM.UPRTE = URTE.UBRTE inner join UPST on UPRM.UPSTS = UPST.UIPSC where UPST.UIIAP <> 'Y' group by UPRM.UPDST, UPRM.UPRTE, URTE.UBDSC","This query retrieves the total number of active premises by district and route. It joins the 'UPRM', 'URTE', and 'UPST' tables to filter data based on district, route, and premises status, grouping by district, route, and route description.",The total number of active premises by district and route is displayed below.,"{
+    ""type"": ""table"",
+    ""x_axis"": [""DISTRICT"", ""ROUTE"", ""ROUTEDESCRIPTION"", ""TOTALPREMISES""],
+    ""y_axis"": [],
+    ""logic"": ""A table is appropriate for displaying premises data grouped by district and route, allowing for easy identification of the total number of active premises.""
+}"
+4,Give me a list of water premises showing latitude and longitude.,not_order_by,"select distinct PREMISESID, SERVICETYP, SVCSIZETYP, PHYSCNCTDT, PHYSDSCNDT, BASEUSAGE, USAGEFCTR, LATITUDE, LONGITUDE, DESCRIPTN, CREATETS from USERVICE where SERVICETYP = 'W'","This query retrieves a list of water premises, displaying distinct premises with their respective attributes, including latitude and longitude. The query filters for records where the service type is 'W' (water).",The list of water premises with latitude and longitude is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['PREMISESID', 'LATITUDE', 'LONGITUDE', 'SERVICETYPE', 'DESCRIPTION'],
+    'y_axis': [],
+    'logic': 'A table is ideal for displaying detailed information about water premises, including geographical coordinates.'
+}"
+5,How many active multi-unit premises do we have?,not_order_by,SELECT COUNT(uprm.UPPRM) AS TotalMultiUnitPremises FROM UPRM INNER JOIN UPST ON uprm.UPSTS = upst.UIPSC WHERE upst.UIIAP <> 'Y' AND uprm.UPDUN > 1,This query counts the total number of active multi-unit premises. It filters data based on premises status and ensures that the unit count is greater than 1 (indicating multi-unit premises).,The total number of active multi-unit premises is displayed below.,"{
+    'type': 'null',
+    'x_axis': ['null'],
+    'y_axis': ['null'],
+    'logic': 'Displaying the total count as a single value for easy readability.'
+}"
+6,How many bills were sent by bill cycle for month 202305?,not_order_by,"select BillCycle, sum(TotalBills) as TotalBills from ( SELECT bhsrcc as BillCycle, count(bhstr#) as TotalBills FROM ublh where bhsrym = 202305 and bhscod = 'C' group by bhsrcc union all SELECT ubcyc as BillCycle, count(bhstr#) as TotalBills FROM ublh a join urte b on a.bhsrcc = b.UBRTE where bhsrym = 202305 and bhscod = 'R' group by ubcyc) tbl group by BillCycle",This query retrieves the total number of bills sent by bill cycle for the month of 202305. It combines records for different billing types ('C' for current and 'R' for recurring) and sums the total bills for each cycle.,The total number of bills sent by bill cycle for the month of 202305 is displayed below.,"{
+    'type': 'bar',
+    'x_axis': ['BILLCYCLE'],
+    'y_axis': ['TOTALBILLS'],
+    'logic': 'A bar chart is appropriate for visualizing the number of bills sent across different bill cycles.'
+}"
+7,List of accounts that had a cancelled bill during revenue month 202305.,not_order_by,"select bhstr# as BillId, bhsact as AccountId, bhsbld as BillDate from ublh where bhscrc = 'C' and bhsrym = 202305",This query retrieves a list of accounts that had a cancelled bill during the revenue month of 202305. It filters records where the bill status code is 'C' (cancelled).,The list of accounts with a cancelled bill during the revenue month 202305 is displayed below.,"{ 'type': 'table', 'x_axis': ['BILLID', 'ACCOUNTID', 'BILLDATE'], 'y_axis': [], 'logic': 'A table format is suitable for displaying detailed account information with cancelled bills.' }"
+8,What is the overall total usage by Unit of Measure for period 202305?,not_order_by,"select BILLING_UNIT_OF_MEASURE_TYPE as UnitofMeasure, sum(billing_usage) as BillingUsage from UUSEHST where usage_period = 202305 group by BILLING_UNIT_OF_MEASURE_TYPE",This query retrieves the total usage by Unit of Measure for the period 202305. It groups the data by the unit of measure and sums the billing usage.,The total usage by Unit of Measure for the period 202305 is displayed below.,"{
+    'type': 'pie',
+    'x_axis': ['UNITOFMEASURE'],
+    'y_axis': ['BILLINGUSAGE'],
+    'logic': 'A pie chart is suitable for visualizing the proportion of usage by different units of measure.'
+}"
+9,List of all services with adjusted usage for period 202304,not_order_by,"select SERVICE_ID as ServiceId, USAGE_PERIOD as UsagePeriod, BILLING_USAGE as BillingUsage from UUSEHST where USAGE_TYPE = 'ADJUSTMENT' and usage_period = 202304",This query retrieves a list of services with adjusted usage for the period 202304. It filters records based on the usage type being 'ADJUSTMENT'.,The list of services with adjusted usage for period 202304 is displayed below.,"{ 'type': 'table', 'x_axis': ['SERVICEID', 'USAGEPERIOD', 'BILLINGUSAGE'], 'y_axis': [], 'logic': 'A table format is appropriate for displaying detailed service usage adjustment information.' }"
+10,List of services with unbilled usage older than 2 months.,not_order_by,"select SERVICE_ID as ServiceId, USAGE_PERIOD as UsagePeriod, BILLING_USAGE as BillingUsage, STATUS_TYPE as Status from UUSEHST where BILL_ID is null and STATUS_TYPE = 'READY' and to_date(cast(usage_period as char(6))||'01','YYYYMMDD') < DATE(SUBSTR(CHAR(now()), 1, 7) || '-01') - 2 months","This query retrieves a list of services with unbilled usage that is older than 2 months. It filters the data where there is no bill ID, the status is 'READY', and the usage period is older than 2 months.",The list of services with unbilled usage older than 2 months is displayed below,"{ 'type': 'table', 'x_axis': ['SERVICEID', 'USAGEPERIOD', 'BILLINGUSAGE', 'STATUS'], 'y_axis': [], 'logic': 'A table format is suitable for displaying detailed information about services with unbilled usage.' }"
+11,List of disconnected services with unbilled usage without any time period filter.,not_order_by,"select PREMISES_ID as PremisesId, b.SERVICE_ID as ServiceId, SERVICE_TYPE as ServiceType, PHYSICAL_DISCONNECT_DATE as DisconnectDate, BILLING_USAGE as BillingUsage, STATUS_TYPE as Status from USERVICE a join UUSEHST b on a.SERVICE_ID = b.SERVICE_ID where PHYSICAL_DISCONNECT_DATE is not null and BILL_ID is null and STATUS_TYPE = 'READY'","This query retrieves a list of disconnected services that have unbilled usage, regardless of the time period. It filters based on services with a physical disconnect date, no bill ID, and a 'READY' status.",The list of disconnected services with unbilled usage is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['PREMISESID', 'SERVICEID', 'SERVICETYPE', 'DISCONNECTDATE', 'BILLINGUSAGE', 'STATUS'],
+    'y_axis': [],
+    'logic': 'A table format is appropriate for displaying detailed information about disconnected services with unbilled usage.'
+}"
+12,List of accounts that are active at more than one premises.,not_order_by,"select ACCOUNT_AGREEMENT_ID as AccountId, count(distinct PREMISES_ID) as TotalPremises from UACTPRM where END_DATE is null group by ACCOUNT_AGREEMENT_ID having count(distinct PREMISES_ID) > 1",This query retrieves a list of accounts that are active at more than one premises. It groups the data by account agreement ID and filters to include only accounts with more than one active premises.,The list of accounts that are active at more than one premises is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['ACCOUNTID', 'TOTALPREMISES'],
+    'y_axis': [],
+    'logic': 'A table format is suitable for displaying accounts with multiple active premises.'
+}"
+13,List of active premises with no active service.,not_order_by,"select a.UPPRM as PremisesId, UPCDT as PremisesEndDate, SERVICE_ID as ServiceId from UPRM a left outer join USERVICE b on a.UPPRM = b.PREMISES_ID inner join UPST c on a.UPSTS = c.UIPSC where c.UIIAP <> 'Y' AND a.UPPRM not in (select distinct bb.PREMISES_ID from uservice bb where PHYSICAL_DISCONNECT_DATE is null)","This query retrieves a list of premises that are considered active (UPCDT is null) but do not have any active services associated with them. It uses a left outer join between the UPRM and USERVICE tables and filters out premises that have a null PHYSICAL_DISCONNECT_DATE in the USERVICE table, indicating an active service.",Here's the list of active premises with no active service.,"{
+    'type': 'table',
+    'x_axis': ['PREMISESID', 'PREMISESENDDATE', 'SERVICEID'],
+    'y_axis': [],
+    'logic': 'A table is appropriate for displaying a list of premises with their corresponding details, including Premises ID, Premises End Date, and Service ID.',
+}"
+14,List of active services with no active premises.,not_order_by,"select SERVICE_ID, PHYSICAL_DISCONNECT_DATE as ServiceEndDate, UPPRM as PremisesId, UPCDT as PremisesEndDate from USERVICE a left outer join UPRM b on a.PREMISES_ID = b.UPPRM where PHYSICAL_DISCONNECT_DATE is null and a.PREMISES_ID not in (select distinct bb.UPPRM from UPRM bb inner join UPST cc on bb.UPSTS = cc.UIPSC where cc.UIIAP = 'Y')",This query retrieves a list of active premises that have no active services. It filters out premises with disconnected services and ensures that the premises status indicates active.,The list of active premises with no active service is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['PREMISESID', 'PREMISESENDDATE', 'SERVICEID'],
+    'y_axis': [],
+    'logic': 'A table format is suitable for displaying detailed information about active premises with no active services.'
+}"
+15,List of premises having invalid Initial Start Date (not having valid date format) ?,not_order_by,"select upprm, left(cast(upidt as char(8)),4)||'-'|| substring(cast(upidt as char(8)),5,2)||'-'|| right(cast(upidt as char(8)),2) as InitialServiceDate, CASE WHEN TRY_CAST(left(cast(upidt as char(8)),4)||'-'|| substring(cast(upidt as char(8)),5,2)||'-'|| right(cast(upidt as char(8)),2) AS DATE) IS NOT NULL THEN 'Valid' ELSE 'Invalid' END AS DateValidity from uprm where CASE WHEN TRY_CAST(left(cast(upidt as char(8)),4)||'-'|| substring(cast(upidt as char(8)),5,2)||'-'|| right(cast(upidt as char(8)),2) AS DATE) IS NOT NULL THEN 'Valid' ELSE 'Invalid' END = 'Invalid'",This query retrieves a list of active services that are not associated with active premises. It filters out services linked to premises that are not marked as active.,The list of active services with no active premises is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['SERVICEID', 'SERVICEENDDATE', 'PREMISESID', 'PREMISESENDDATE'],
+    'y_axis': [],
+    'logic': 'A table format is suitable for displaying detailed information about active services with no active premises.'
+}"
+16,List of premises with an invalid Discontinued Date,not_order_by,"select upprm, left(cast(upcdt as char(8)),4)||'-'|| substring(cast(upcdt as char(8)),5,2)||'-'|| right(cast(upcdt as char(8)),2) as DisconnectedDate, CASE WHEN TRY_CAST(left(cast(upcdt as char(8)),4)||'-'|| substring(cast(upcdt as char(8)),5,2)||'-'|| right(cast(upcdt as char(8)),2) AS DATE) IS NOT NULL THEN 'Valid' ELSE 'Invalid' END AS DateValidity from uprm where upcdt <> 0 and CASE WHEN TRY_CAST(left(cast(upcdt as char(8)),4)||'-'|| substring(cast(upcdt as char(8)),5,2)||'-'|| right(cast(upcdt as char(8)),2) AS DATE) IS NOT NULL THEN 'Valid' ELSE 'Invalid' END = 'Invalid'",This query retrieves a list of premises that have an invalid discontinued date format. It checks if the discontinued date is not zero and whether the date can be correctly cast to a valid date format.,The list of premises with an invalid discontinued date is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['UPPRM', 'DISCONNECTEDDATE', 'DATEVALIDITY'],
+    'y_axis': [],
+    'logic': 'A table format is suitable for displaying detailed information about premises with invalid discontinued dates.'
+}"
+17,Give me the total number of active electric services.,not_order_by,"SELECT a.SERVICE_TYPE AS ServiceType, b.DESCRIPTION AS ServiceTypeDescription, COUNT(DISTINCT a.SERVICE_ID) AS TotalServices FROM uservice a JOIN usvctyp b ON a.SERVICE_TYPE = b.SERVICE_TYPE WHERE b.DESCRIPTION LIKE '%Electric%' AND a.PHYSICAL_DISCONNECT_DATE IS NULL GROUP BY a.SERVICE_TYPE, b.DESCRIPTION","This query counts the total number of active electric services. It joins the 'uservice' and 'usvctyp' tables to filter for services with a description containing 'Electric' and having a null 'PHYSICAL_DISCONNECT_DATE', indicating active services. The query groups the results by service type and description, providing a count of distinct service IDs.",The total number of active electric services is displayed below.,"{
+            'type': 'bar',
+            'x_axis': ['SERVICETYPE'],
+            'y_axis': ['TOTALSERVICES'],
+            'logic': 'Type of services against number of services better represented by bar chart',
+        }"
+18,Give me a list of premises where the route stop doesnt match the service stop.,not_order_by,"select a.SERVICE_ID as ServiceId, a.PREMISES_ID as PremisesId, a.METER_READING_STOP_NUMBER as ServiceRoute, UPSTP as PremisesRoute from uservice a join uprm b on a.PREMISES_ID = b.UPPRM where a.METER_READING_STOP_NUMBER <> b.UPSTP"," This query retrieves a list of premises where the route stop does not match the service stop. It selects the service ID, premises ID, service route stop number, and premises route stop number by joining the uservice table with the uprm table. The query filters for records where the METER_READING_STOP_NUMBER from the service table does not equal the UPSTP from the premises table.",The list of premises where the route stop does not match the service stop is displayed below.,"{
+    ""type"": ""table"",
+    ""x_axis"": [""SERVICEID"", ""PREMISESID"", ""SERVICEROUTE"", ""PREMISESROUTE""],
+    ""y_axis"": [],
+    ""logic"": ""A table is suitable for listing discrepancies between service route stops and premises route stops, providing a clear view of each record's service ID, premises ID, and both route stop numbers.""
+}"
+19,Give me a list of premises where the route stop doesnt match the service stop.,not_order_by,"select a.SERVICE_ID as ServiceId, a.PREMISES_ID as PremisesId, a.METER_READING_STOP_NUMBER as ServiceRoute, UPSTP as PremisesRoute from uservice a join uprm b on a.PREMISES_ID = b.UPPRM where a.METER_READING_STOP_NUMBER <> b.UPSTP","This query joins the 'uservice' and 'uprm' tables on the 'PREMISES_ID' to compare the 'METER_READING_STOP_NUMBER' (service stop) with the 'UPSTP' (premises route stop). It filters for records where these two values are not equal, indicating a mismatch between the service stop and the premises route stop.",Here is a list of premises where the route stop doesn't match the service stop.,"{
+    'type': 'table',
+    'x_axis': ['SERVICEID', 'PREMISESID', 'SERVICEROUTE', 'PREMISESROUTE'],
+    'y_axis': [],
+    'logic': 'A table is suitable for displaying a list of premises with their corresponding service and premises route stop information, allowing for easy comparison and identification of mismatches.',
+}"
+20,Give me a list of services that are missing the serivce size.,not_order_by,"select SERVICE_ID as ServiceId, PREMISES_ID as PremisesId, SERVICE_SIZE_TYPE as ServiceSize from uservice where SERVICE_SIZE_TYPE is null","This query retrieves a list of services that are missing the service size. It selects the service ID, premises ID, and service size type from the uservice table, filtering for records where the SERVICE_SIZE_TYPE is null.",The list of services that are missing the service size is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['SERVICEID', 'PREMISESID', 'SERVICESIZE'],
+    'y_axis': [],
+    'logic': 'A table is suitable for listing services missing the service size, providing a clear view of each record's service ID, premises ID, and service size type.'
+}"
+21,List of premises that are active with a discontinued date populated.,not_order_by,"select upprm as PremisesId, upcdt as DiscontinuedDate, upsts as PremisesStatus from uprm a join upst b on a.upsts = b.uipsc where uiiap = 'N' and upcdt <> 0 and upcdt is NOT NULL","This query retrieves a list of active premises that have a populated discontinued date. It selects the premises ID, discontinued date, and premises status from the uprm table, joined with the upst table to filter based on premises status. The query filters for records where the premises status is active (uiiap = 'N'), the discontinued date is not zero and is not null.",The list of active premises with a discontinued date populated is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['PREMISESID','DISCONTINUEDDATE','PREMISESSTATUS'],
+    'y_axis': [],
+    'logic': 'A table is suitable for listing active premises with a discontinued date, providing a clear view of each record's premises ID, discontinued date, and status.'
+}"
+22,List of premises that have zero number of dwelling units.,not_order_by,"select upprm as PremisesId, updwc as DwellingCode, updun as DwellingUnits from uprm a where updun = 0","This query retrieves a list of premises where the number of dwelling units is zero. It selects the premises ID, dwelling code, and the number of dwelling units from the uprm table, filtering for records where updun is equal to zero.", The list of premises with zero dwelling units is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['PREMISESID', 'DWELLINGCODE', 'DWELLINGUNITS'],
+    'y_axis': [],
+    'logic': 'A table is appropriate for listing premises with zero dwelling units, providing clear details on each record's ID, code, and the count of dwelling units.'
+}"
+23,Which accounts' bills were not printed for revenue period 202306 for all accounts?,not_order_by,"select bhsact as AccountId, bhsprm as PremisesId, bhsbld as BillDate, bhsprt as PrintFlag from ublh where BHSPRT <> 'Y' and bhsrym = 202306","This query retrieves a list of accounts whose bills were not printed for the revenue period 202306. It selects the account ID, premises ID, bill date, and print flag from the ublh table, filtering for records where the BHSPRT flag is not 'Y' and the revenue period (bhsrym) is 202306.",The list of accounts with bills not printed for revenue period 202306 is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['ACCOUNTID', 'PREMISESID', 'BILLDATE', 'PRINTFLAG'],
+    'y_axis': [],
+    'logic': 'A table is suitable for displaying accounts with bills not printed, providing a clear view of each account's ID, premises ID, bill date, and print status.'
+}"
+24,List of all EFT bills past their due date that have not drafted.,not_order_by,"select bhsact as AccountId, bhsprm as PremisesId, bhsbld as BillDate, bhspdd as DueDate, bhseft as EFTFlag from ublh where bhseft = '' and to_date(cast(bhspdd as char(8)),'YYYYMMDD') < current date","This query retrieves a list of all EFT bills that are past their due date and have not been drafted. It selects the account ID, premises ID, bill date, due date, and EFT flag from the ublh table, filtering for records where the bhseft flag is empty and the due date (bhspdd) is earlier than the current date.",The list of EFT bills past their due date that have not been drafted is displayed below.,"{
+    'type': 'table',
+    'x_axis': ['ACCOUNTID', 'PREMISESID', 'BILLDATE', 'DUEDATE', 'EFTFLAG'],
+    'y_axis': [],
+    'logic': 'A table is appropriate for listing EFT bills past their due date and not drafted, providing a clear view of each record's account ID, premises ID, bill date, due date, and EFT status.'
+}"
+25,List of all accounts in cycle '10' that havent billed for revenue period '202306'?,not_order_by,"SELECT bhsact as AccountId, ubcyc as BillCycle, MAX(bhsbld) as LastBillDate FROM ublh a JOIN uactprm b ON a.bhsact = b.account_agreement_id AND a.bhsprm = b.premises JOIN uprm c ON b.premises_id = c.upprm JOIN urte d ON c.uprte = d.ubrte WHERE ubcyc = 10 AND bhscrc NOT IN ('C', 'S') AND end_date IS NULL GROUP BY bhsact, ubcyc HAVING LEFT(MAX(bhsbld),6) < 202306 AND MAX(bhsbld) IS NOT NULL;","This query retrieves a list of all accounts in cycle '10' that have not been billed for the revenue period '202306'. It selects the account ID, bill cycle, and the last bill date from the ublh table, joined with uactprm, uprm, and urte tables to filter based on the account agreement, premises, and route. The query filters for records where the bill cycle is '10', the bill status code is not 'C' or 'S', and the end date is null. It groups by account ID and bill cycle, and filters for accounts where the last bill date is before the revenue period '202306' and is not null.",The list of accounts in cycle '10' that have not been billed for revenue period '202306' is displayed below.,"{
+    ''type'': ''table'',
+    ''x_axis'': ['ACCOUNTID', 'BILLCYCLE', 'LASTBILLDATE'],
+    ''y_axis'': [],
+    ''logic'': ''A table is suitable for listing accounts that haven't been billed for the specified revenue period, showing each record's account ID, bill cycle, and last bill date.''
+}'"
+26,Last bill date of Account '881'/ Premises '10000514'?,not_order_by,"SELECT a.bhsact AS AccountId, a.bhsprm AS PremisesId, MAX(a.bhsbld) AS LastBillDate FROM ublh a JOIN uprm b ON a.bhsprm = b.upprm WHERE a.bhscrc NOT IN ('C', 'S') AND a.bhsact = 881 AND a.bhsprm like '%10000514%' GROUP BY a.bhsact, a.bhsprm",This query retrieves the last billing date for a specific account ('881') and premises ('10000514'). It joins the 'ublh' and 'uprm' tables to match the account and premises IDs. The billing status filter excludes canceled ('C') or suppressed ('S') bills.,The last bill date for Account '881'/ Premises '10000514' is displayed below.,"{
+            'type': 'null',
+            'x_axis': ['null'],
+            'y_axis': ['null'],
+            'logic': 'Since the question asks for a single date, no chart is needed.',
+        },
+    }"
+27,Compare 2023 and 2022 residential water billed usage,not_order_by,"SELECT SUBSTR(bhsrym, 1, 4) AS YEAR, SUM(billing_usage) AS BILLINGUSAGE FROM uusehst u JOIN uservice s ON u.service_id = s.service_id JOIN usvctyp t ON s.service_type = t.service_type JOIN ublh b ON u.bill_id = b.bhstr# JOIN ucls c ON b.bhscls = c.uccls WHERE status_type = 'BILLED' AND bhscrc NOT IN ('C', 'S') AND ucdes LIKE '%Residential%' AND t.utility_type = 'W'   AND SUBSTR(bhsrym, 1, 4) IN ('2022', '2023') GROUP BY SUBSTR(bhsrym, 1, 4) ORDER BY SUBSTR(bhsrym, 1, 4)","This query compares the residential water billed usage between the years 2023 and 2022. It joins multiple tables ('uusehst', 'uservice', 'usvctyp', 'ublh', and 'ucls') to filter the data based on the service type, billing status, utility type, and description. The query sums up the billing usage for the years 2023 and 2022 using conditional aggregation. The 'GROUP BY' clause ensures that the results are grouped by the years in question.",The comparison of residential water billed usage for the years 2023 and 2022 is displayed below.,"{
+            'type': 'bar',
+            'x_axis': ['YEAR'],
+            'y_axis': ['BILLINGUSAGE'],
+            'logic': 'A bar chart is appropriate to visualize the comparison of water usage between two years, showing the total billed usage for each year.',
+        }"
+28,How many units of Water Usage were billed with Usage Period  '202306',not_order_by,"select t.utility_type as UtilityType, u.usage_period as UsagePeriod, sum(u.billing_usage) as BillingUsage from uusehst u join uservice s on u.service_id = s.service_id join usvctyp t on s.service_type = t.service_type join ublh b on u.bill_id = b.bhstr# where status_type = 'BILLED' and bhscrc not in ('C', 'S') and usage_period = 202306 and t.utility_type = 'W' group by t.utility_type, u.usage_period","This query retrieves the total units of water usage that were billed for a specific usage period ('202306'). It joins the 'uusehst', 'uservice', 'usvctyp', and 'ublh' tables to filter the relevant data based on the billing status, utility type, and usage period. The 'SUM' function calculates the total billed usage for the specified period, and the 'GROUP BY' clause groups the results by utility type and usage period.",The total units of water usage billed for Usage Period 'June 2023' is displayed below.,"{
+        'type': 'null',
+        'x_axis': ['null'],
+        'y_axis': ['null'],
+        'logic': 'Since the question asks for a single total value, no chart is needed.',
+    }"
+29,What was the billed revenue for water residential accounts for Revenue Period '202306',not_order_by,"select b.bhsrym as RevenuePeriod, sum(b.bhstot) as BillingRevenue from uusehst u join uservice s on u.service_id = s.service_id join usvctyp t on s.service_type = t.service_type join ublh b on u.bill_id = b.bhstr# join ucls c on b.bhscls = c.uccls where status_type = 'BILLED' and bhscrc not in ('C', 'S') and ucdes like '%Residential%' and bhsrym = 202306 and t.utility_type = 'W' group by b.bhsrym","This query calculates the total billed revenue for water services for residential accounts within a specific revenue period ('202306'). It joins relevant tables to filter for billed water usage, residential customer class, and the specified revenue period. The 'SUM' function calculates the total revenue from the 'bhstot' column in the 'ublh' table.",The billed revenue for water residential accounts for Revenue Period 'June 2023' is displayed below.,"{
+            'type': 'null',
+            'x_axis': ['null'],
+            'y_axis': ['null'],
+            'logic': 'Since the question asks for a single total value, no chart is needed.',
+        }"
+30,How is residential water revenue trending for 2023,not_order_by,"select b.bhsrym as RevenuePeriod, sum(b.bhstot) as BillingRevenue from uusehst u join uservice s on u.service_id = s.service_id join usvctyp t on s.service_type = t.service_type join ublh b on u.bill_id = b.bhstr# join ucls c on b.bhscls = c.uccls where status_type = 'BILLED' and bhscrc not in ('C', 'S') and ucdes like '%Residential%' and left(usage_period,4) = 2023 and t.utility_type = 'W' group by b.bhsrym","This query retrieves the residential water revenue trend for the year 2023. It joins multiple tables ('uusehst', 'uservice', 'usvctyp', 'ublh', and 'ucls') to filter the data based on the billing status, utility type, and description. The query sums up the total billed amount (bhstot) for each revenue period within the year 2023. The 'GROUP BY' clause groups the results by revenue period, providing a trend over the year.",The trend of residential water revenue for 2023 is displayed below.,"{
+        'type': 'line',
+        'x_axis': ['REVENUEPERIOD'],
+        'y_axis': ['BILLINGREVENUE'],
+        'logic': 'A line chart is appropriate to visualize the trend of water revenue over time, showing how the revenue changes across different periods in 2023.',
+    }"

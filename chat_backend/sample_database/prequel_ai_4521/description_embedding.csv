@@ -1,0 +1,256 @@
+table_name,col_name,description
+UACTPRM,ACCOUNT_AGREEMENT_ID,"Account Agreement Id (DECIMAL): A unique identifier for the account-premises agreement, represented as a decimal number to ensure precise identification."
+UACTPRM,ACCOUNT_PREMISES_ID,"Account Agreement / Premises Id (BIGINT): A unique identifier combining account and premises details, used to link the account with the specific premises. The BIGINT data type allows for large integer values."
+UACTPRM,END_DATE,End Date when account-premises agreement went inactive (NULL when active) (DATE): The date when the account-premises agreement was terminated. NULL indicates that the agreement is still active. The DATE data type captures this date in a standard format.
+UACTPRM,PREMISES_ID,"Premises Id (CHAR): A unique identifier for each premises, stored as a fixed-length character string. This code is used to link specific premises with account agreements."
+UACTPRM,START_DATE,Start Date (DATE): The date when the account-premises agreement began. The DATE data type is used to record this date in a standard format.
+UBLH,BHS#CP,"Number of Copies (DECIMAL): Represents the number of copies of the bill issued, using the DECIMAL data type to accommodate fractional values if necessary."
+UBLH,BHSACT,"Account Id (DECIMAL): The identifier for the account related to the billing record, stored as a decimal number to ensure precise tracking."
+UBLH,BHSADDRID,"Address Id (BIGINT): A unique identifier for the address to which the bill is sent, represented as a large integer. This allows for a large number of unique addresses."
+UBLH,BHSARA,Area Code (CHAR): A fixed-length character code representing the geographical area of the service address.
+UBLH,BHSAST,"Account Status (CHAR): Indicates the current status of the account, with possible values such as 'IA' for inactive or 'AC' for active."
+UBLH,BHSBGA,"Budget Amount (DECIMAL): The amount allocated to the budget for the billing period, represented as a decimal number to handle precise financial figures."
+UBLH,BHSBGB,"Budget Balance (DECIMAL): The remaining balance in the budget after charges, recorded as a decimal to handle financial precision."
+UBLH,BHSBGC,"Budget Code (CHAR): A fixed-length character code representing the type of budget applied, used for categorization."
+UBLH,BHSBGL,"Budget Levelized Budget (CHAR): Indicates if the budget is levelized ('Y' for yes, 'N' for no). Levelized budgets spread costs evenly over a period."
+UBLH,BHSBGM,"Budget # of Months (DECIMAL): The number of months over which the budget is spread, stored as a decimal to accommodate fractional months if needed."
+UBLH,BHSBGP,"Budget Calc Program (CHAR): The program used for budget calculations, identified by a fixed-length character code."
+UBLH,BHSBGS,"Budget Settle-up Month (DECIMAL): The month in which budget adjustments or settlements occur, represented as a decimal number."
+UBLH,BHSBLD,"Bill Date (DECIMAL): The date when the bill was issued, formatted as YYYYMMDD and stored as a decimal to handle large numbers."
+UBLH,BHSBMB,"Budget Memo Bill (CHAR): Indicates whether a memo bill was created ('Y' for yes, 'N' for no). Memo bills provide additional information or adjustments."
+UBLH,BHSBPG,"Post Program (It is not for any bill tasks) (CHAR): Status code indicating if the bill is processed through a specific post-program, with a fixed-length character code."
+UBLH,BHSBPH,"Business Phone Number (DECIMAL): Phone number of the business associated with the account, stored as a decimal to handle various formats."
+UBLH,BHSBPR,"Bill Periods (DECIMAL): The number of billing periods covered by the bill, represented as a decimal to accommodate fractional periods if needed."
+UBLH,BHSBSB,"Bill Batch Id (CHAR): Identifier for the batch of bills, used to group related bills together, represented as a fixed-length character string."
+UBLH,BHSBTP,"Bill Type Code (CHAR): Code indicating the type of bill, used for categorization, with a fixed-length character string."
+UBLH,BHSBUD,"Budget Bill (CHAR): Indicates whether the bill is part of a budget ('Y' for yes, 'N' for no)."
+UBLH,BHSCBC,"Closing Bill Code (CHAR): Code for handling the final bill, representing how the final bill is processed or categorized."
+UBLH,BHSCDD,Calculate Due Date (CHAR): Flag indicating if the due date should be calculated ('Y' for yes).
+UBLH,BHSCLC,"Calculate Bill Flag (CHAR): Flag indicating if the bill should be calculated ('Y' for yes, 'N' for no)."
+UBLH,BHSCLD,"Collection Due Date (DECIMAL): Date by which payment should be collected, formatted as YYYYMMDD and stored as a decimal."
+UBLH,BHSCLS,"Account Type/Class (CHAR): Classification of the account type or class, used to categorize the account into different types or classes."
+UBLH,BHSCOD,"Route/Cycle Code (CHAR): Code indicating the route or cycle for billing, used to manage the billing process."
+UBLH,BHSCRC,"Cancel/Rebill Code (CHAR): Code used for canceling or rebilling, representing reasons or procedures related to cancellations or rebills."
+UBLH,BHSCSO,"Create S/O (CHAR): Indicates if a service order (S/O) was created ('Y' for yes, 'N' for no)."
+UBLH,BHSCSQ,"Copy Sequence # (DECIMAL): Sequence number for tracking copies of the bill, represented as a decimal to handle sequential copies."
+UBLH,BHSCT#,"CRC Transaction # (DECIMAL): Transaction number associated with the bill in the CRC system, used for tracking specific transactions."
+UBLH,BHSCUR,"Current Bill Amount (DECIMAL): The amount due on the current bill, recorded as a decimal to handle precise financial figures."
+UBLH,BHSCUS,"Customer Id (DECIMAL): Unique identifier for the customer, represented as a decimal to ensure precise identification."
+UBLH,BHSDBA,"DBA Name (CHAR): Doing Business As (DBA) name for the account, listing the operating name of the business."
+UBLH,BHSDIV,"Division Code (CHAR): Code representing the division within the organization, used for categorizing or managing different divisions."
+UBLH,BHSDST,"District Code (CHAR): Code indicating the district where the service is provided, used for geographical categorization."
+UBLH,BHSDYS,"Bill Period Days (DECIMAL): Number of days covered by the billing period, stored as a decimal to handle precise day counts."
+UBLH,BHSEFT,"EFT Transfer Flag for drafted X or Y and for not drafted '' (CHAR): Indicates the status of EFT transfers, with 'X' or 'Y' for drafted and '' for not drafted."
+UBLH,BHSEMP,"Employer (CHAR): Name of the employer associated with the account, listed as a fixed-length character string."
+UBLH,BHSEXC,"Exception Code (CHAR): Code indicating any exceptions or special conditions related to the account or bill, represented as a fixed-length character string."
+UBLH,BHSFNM,"First Name (CHAR): First name of the person associated with the account, stored as a fixed-length character string."
+UBLH,BHSGBC,"Group Bill Code (CHAR): Code indicating whether the bill is part of a group billing arrangement ('Y' for yes, 'N' for no)."
+UBLH,BHSGBH,"Group Bill Header (CHAR): Provides additional information or headers for group billing arrangements, detailed as a fixed-length character string."
+UBLH,BHSGBI,"Group Bill Invoice # (DECIMAL): Invoice number for group billing, represented as a decimal to track specific invoices within group billing."
+UBLH,BHSLAT,"Late Charge (DECIMAL): Amount of the late charge applied to the bill, representing penalties for late payment, stored as a decimal for financial precision."
+UBLH,BHSLBD,"Last Bill Date (DECIMAL): The date when the last bill was issued, formatted as YYYYMMDD and stored as a decimal."
+UBLH,BHSLCG,"Late Charge Exempt (CHAR): Indicates whether the account is exempt from late charges ('Y' for yes, 'N' for no)."
+UBLH,BHSLNM,"Last Name (CHAR): The last name of the person associated with the account, stored as a fixed-length character string."
+UBLH,BHSLPD,"Last Payment Date (DECIMAL): The date when the last payment was made, formatted as YYYYMMDD and stored as a decimal."
+UBLH,BHSLST,"Language Set (CHAR): The language set used for the account, stored as a fixed-length character string."
+UBLH,BHSMCP,"Misc Charge Post (CHAR): Indicates if miscellaneous charges were posted ('Y' for yes, 'N' for no)."
+UBLH,BHSMIL,"Middle Initial (CHAR): The middle initial of the person associated with the account, stored as a fixed-length character string."
+UBLH,BHSNAM,"Account Name (CHAR): The name of the account holder, stored as a fixed-length character string."
+UBLH,BHSNAS,"New Account Status (CHAR): Indicates the status of a newly created account, represented as a fixed-length character string."
+UBLH,BHSNET,"Net Bill Amount (DECIMAL): The total amount due on the bill after adjustments, represented as a decimal to handle precise financial figures."
+UBLH,BHSOBC,"Opening Bill Code (CHAR): Code indicating the type of opening bill, represented as a fixed-length character string."
+UBLH,BHSOCA,"Other Credit Amounts (DECIMAL): Additional credit amounts applied to the account, represented as a decimal for precise financial tracking."
+UBLH,BHSOPH,"Phone Number (DECIMAL): Phone number associated with the account, formatted as a decimal to handle various phone number formats."
+UBLH,BHSORY,"Original Revenue Date (DECIMAL): The original date when revenue was recorded, formatted as YYYYMM and stored as a decimal."
+UBLH,BHSOVR,"Override Exception (CHAR): Indicates if an override exception was applied ('Y' for yes, 'N' for no)."
+UBLH,BHSPAD,"Previous Adjustments (DECIMAL): Total amount of previous adjustments made to the account, represented as a decimal for accurate financial tracking."
+UBLH,BHSPAS,"Past Due Amount (DECIMAL): Amount that is past due on the account, represented as a decimal to handle precise financial figures."
+UBLH,BHSPAY,"Payments (DECIMAL): Amount of payments made towards the bill, represented as a decimal for precise financial tracking."
+UBLH,BHSPDC,"Past Due Credit Code (CHAR): Code representing credits related to past due amounts, used for categorization."
+UBLH,BHSPDD,"Due Date (DECIMAL): The date when the payment is due, formatted as YYYYMMDD and stored as a decimal."
+UBLH,BHSPDM,"Past Due Comm Code (CHAR): Code for past due communication, used to track communication regarding overdue payments."
+UBLH,BHSPEN,"Future Penalty (DECIMAL): The penalty amount applied for future late payments, represented as a decimal to handle precise financial figures."
+UBLH,BHSPFX,"Prefix (CHAR): Prefix code associated with the account, used for categorization, represented as a fixed-length character string."
+UBLH,BHSPGB,"Print w/ Group Stmt (CHAR): Indicates if the bill was printed with a group statement ('Y' for yes, 'N' for no)."
+UBLH,BHSPPG,"Print Program (CHAR): The program used for printing the bill, represented as a fixed-length character string."
+UBLH,BHSPRM,"Premises Id (CHAR): Identifier for the premises associated with the account, represented as a fixed-length character string."
+UBLH,BHSPRT,"Print Statement (CHAR): Indicates if the statement was printed ('Y' for yes, 'N' for no)."
+UBLH,BHSPSQ,"Print Sequence (DECIMAL): Sequence number for print jobs, used to track the order of printed statements, represented as a decimal."
+UBLH,BHSPST,"Premises Status (CHAR): Status of the premises related to the account, represented as a fixed-length character string."
+UBLH,BHSRCC,"Route/Cycle Code (DECIMAL): Code for the route or cycle associated with the billing, formatted as a decimal."
+UBLH,BHSRGN,"Region Code (CHAR): Code representing the geographical region for the account, stored as a fixed-length character string."
+UBLH,BHSRLB,"Roll Budget Flag (CHAR): Indicates if the budget is rolled over ('0' for no, '1' for yes)."
+UBLH,BHSRYM,"Revenue Date / Period (DECIMAL): Represents the revenue date or reporting period formatted as YYYYMM. This field denotes the period for which revenue is calculated and reported. It is used to group and analyze revenue data over time. Stored as a DECIMAL value, it ensures consistency in numerical operations and comparisons with other time-based fields."
+UBLH,BHSSBT,"Subtotal (DECIMAL): The subtotal amount on the bill before taxes or additional charges, represented as a decimal for precise financial figures."
+UBLH,BHSSHD,"Special Handling Code (CHAR): Code indicating special handling instructions for the bill, represented as a fixed-length character string."
+UBLH,BHSSPG,"Selection Program (CHAR): Program used for selecting bills or processing instructions, represented as a fixed-length character string."
+UBLH,BHSSRT,"Sort Order (DECIMAL): Order in which bills are sorted, represented as a decimal to handle different sorting priorities."
+UBLH,BHSTAX,"Total Taxes (DECIMAL): Total amount of taxes applied to the bill, represented as a decimal for precise financial tracking."
+UBLH,BHSTBL,"Terms Balance (DECIMAL): Balance amount as per the billing terms, represented as a decimal to handle precise financial figures."
+UBLH,BHSTEX,"Terminal Exception Code (CHAR): Code indicating exceptions at the terminal, represented as a fixed-length character string."
+UBLH,BHSTGP,"Transaction Group Num (DECIMAL): Number identifying the transaction group, used for grouping related transactions, represented as a decimal."
+UBLH,BHSTGR,"Trigger Code (CHAR): Code used to trigger specific actions or processes, represented as a fixed-length character string."
+UBLH,BHSTOT,"Total Amount Due (DECIMAL): The total amount due on the bill, including all charges and adjustments, represented as a decimal."
+UBLH,BHSTP#,"Third Party Seq# (DECIMAL): Sequence number for third-party transactions, represented as a decimal to handle sequential numbering."
+UBLH,BHSTPC,"Third Party Code (CHAR): Code identifying the third party involved, represented as a fixed-length character string."
+UBLH,BHSTR#,"Transaction (Bill) Id (DECIMAL): Identifier for the transaction or bill, used for tracking individual bills, represented as a decimal."
+UBLH,BHSTRM,"Terms Amount Due (DECIMAL): Amount due as per the billing terms, represented as a decimal to handle precise financial figures."
+UBLH,BHSWOC,"Write-Off Code (CHAR): Code indicating whether the amount has been written off ('Y' for yes, 'N' for no)."
+UBLH,BHSWSC,"Winter/Summer Mo Code (CHAR): Code indicating the season for billing purposes, with 'S' for summer and 'W' for winter."
+UBLH,BHSWSM,"Winter/Summer Months (CHAR): A string representing the winter or summer months, used for seasonal billing adjustments."
+UCLS,UC@GR,"Default Gross Bill Code (CHAR): Default code used for gross billing, represented as a fixed-length character string."
+UCLS,UC@LC,"Default Late Charge Code (CHAR): Default code used for late charges, represented as a fixed-length character string."
+UCLS,UCACTIVE,"Active? (CHAR): Indicates if the record is active ('1' for yes, '0' for no)."
+UCLS,UCBCC,"Budget Past Due Comm (CHAR): Code for past due communication related to budgeting, represented as a fixed-length character string."
+UCLS,UCBCR,"Budget Past Due Credit (CHAR): Code for past due credit related to budgeting, represented as a fixed-length character string."
+UCLS,UCBDD#,"Budget Due Days (DECIMAL): Number of days due in the budget, represented as a decimal."
+UCLS,UCBGR,"Budget Gross Bill Code (CHAR): Code used for gross billing in budgeting, represented as a fixed-length character string."
+UCLS,UCBLC,"Budget Late Charge Code (CHAR): Code used for late charges in budgeting, represented as a fixed-length character string."
+UCLS,UCBPG,"Budget Notice Proc Group (CHAR): Group used for processing budget notices, represented as a fixed-length character string."
+UCLS,UCBTP,"Bill Type Code (CHAR): Code representing the type of bill, represented as a fixed-length character string."
+UCLS,UCCBD,Closed Bill # of Days: The number of days after which a bill is considered closed.
+UCLS,UCCLS,Class Type: The type of class for billing or account categorization.
+UCLS,UCCMC,Past Due Comm Code: Code for past due communication.
+UCLS,UCCPG,Closed Notice Proc Group: Group used for processing closed notices.
+UCLS,UCDES,Description: Description of the billing or account classification.
+UCLS,UCDUD#,Bill Due Days: The number of days a bill is due after issuance.
+UCLS,UCGPD#,Grace Period Days: Number of days allowed for grace period before penalties apply.
+UCLS,UCHAM,High W/O Amount: The amount threshold for high write-offs.
+UCLS,UCLAM,Low W/O Amount: The amount threshold for low write-offs.
+UCLS,UCNCB,New Customer # of Days: Number of days a new customer is given for certain processing or discounts.
+UCLS,UCPDC,Past Due Credit Code: Code for past due credit.
+UCLS,UCPFD,Pref Due Days # of Days: Preferred number of days for due payments.
+UCLS,UCPGC,Notice Processing Group: Group used for processing notices.
+UCLS,UCRMO,Refund # of Months: Number of months for processing refunds.
+UCLS,UCSCD,Subset Code: Code for subsets in billing or account categorization.
+UCLS,UCSDS,Short Description: Short description for billing or account categorization.
+UCLS,UCTGR,Bill Trigger Code: Code used to trigger specific actions or processes related to billing.
+UCLS,UCWSM,Winter/Summer Months: Code representing the months for winter or summer billing adjustments.
+UPRM,UPADL,Directions to Premises: Instructions or directions for locating the premises.
+UPRM,UPARA,Area: Area code or designation for the premises.
+UPRM,UPCDT,"Service Discontinued Date: Date when the service was discontinued, stored in a date format as YYYYMMDD with Decimal data type. Value 0 is valid data point as default value.
+In order to get the invalid record one can typecasting into date considering column date format along with exception for additional valid data points such as 0 in this case."
+UPRM,UPCOUNTY,County Code: Code representing the county where the premises is located.
+UPRM,UPDIV,Division: Division code or designation related to the premises.
+UPRM,UPDSC,Discount Code: Code used for applying discounts to the premises.
+UPRM,UPDST,District: District code or designation related to the premises.
+UPRM,UPDUN,Number Dwelling Units: Number of dwelling units at the premises.
+UPRM,UPDWC,Dwelling Code: Code representing the type of dwelling.
+UPRM,UPELVZONE,Elevation Zone: Zone code indicating the elevation level of the premises.
+UPRM,UPHTP,Heat Type: Code indicating the type of heating at the premises.
+UPRM,UPIDT,"Initial Service Date: Date when premises was started, stored in a date format as YYYYMMDD with Decimal data type. In order to get the invalid record one can typecasting into date considering column date format."
+UPRM,UPMPR,Master Premises Id: Unique identifier for the master premises.
+UPRM,UPPOI,Point of Interest: Code representing a point of interest related to the premises.
+UPRM,UPPRM,Premises Id: Unique identifier for the premises.
+UPRM,UPRA#,Responsible Account Id: Identifier for the account responsible for the premises.
+UPRM,UPRGN,Region: Region code where the premises is located.
+UPRM,UPRTE,Meter Reading Route Code. The route code used for meter reading purposes.
+UPRM,UPSIC,SIC/SRC Code: Standard Industry Code or Source Code for the premises.
+UPRM,UPSTP,Meter Reading Stop: Stop code for meter reading.
+UPRM,UPSTS,Foreign Key of Premises Status Type Table: Key linking to the status type of the premises.
+UPRM,UPTXD,Taxing District: District code for taxing purposes related to the premises.
+UPRM,UPTYP,"Premises Type: Type code for the premises, indicating its classification."
+UPRM,UPWTHRZONE,Weather Zone: Zone code related to weather conditions at the premises.
+UPRM,UPZON,Work Zone: Zone code for work or maintenance related to the premises.
+UPST,UIIAP,"Flag if Premises is Inactive: Indicates if the premises is inactive ('N' for no, 'Y' for yes)."
+UPST,UIPSC,Primary Key of Premises Status Type: Key representing the type of premises status.
+UPST,UIPSD,Description: Description of the premises status type.
+UPST,UIPSSD,Short Description: Short form of the premises status description.
+URTE,UBBDD,Budget Due Days: Number of days for budget due.
+URTE,UBBDT,"Last Bill Date: Date when the last bill was issued, formatted as YYYYMMDD."
+URTE,UBCDT,"Current Read Date: Date when the current meter reading was taken, formatted as YYYYMMDD."
+URTE,UBCRW,Default Crew Code: Code for default crew assigned.
+URTE,UBCYC,Route Set Id: Identifier for the route set used.
+URTE,UBDDT,"Payment Due Date: Date when payment is due, formatted as YYYYMMDD."
+URTE,UBDSC,"Route Description. A description of the route, including details on its service area and other relevant information."
+URTE,UBDUD,Bill Due Days: Number of days a bill is due after issuance.
+URTE,UBDWNLDMBR,Download Member Name: Name of the member for download purposes.
+URTE,UBELGDWNLD,"Eligible for Download?: Indicates if the record is eligible for download ('0' for no, '1' for yes)."
+URTE,UBNRD,"Next Read Date: Date for the next meter reading, formatted as YYYYMMDD."
+URTE,UBPDT,"Previous Read Date: Date when the previous meter reading was taken, formatted as YYYYMMDD."
+URTE,UBRDY,Meter Reading Day: Day of the meter reading.
+URTE,UBREADTYPE,"Meter Read Type. Specifies the type of meter reading, such as initial ('I') or final ('K')."
+URTE,UBRMSG,Route Message. Stores a message related to the meter reading route.
+URTE,UBRST,Read Schedule Type. Defines the schedule type for meter reading.
+URTE,UBRTE,Route Id. A unique identifier for the meter reading route.
+URTESET,BILLABLE,Billable? Indicates whether the service is billable.
+URTESET,DESCRIPTION,Description. A description of the route set.
+URTESET,OVERRIDE_BILL_CYCLE_ROUTE_ID,Override Bill Cycle Route Id. The overridden ID for the bill cycle route.
+URTESET,ROUTE_SET_ID,Route Set Id. A small integer representing the ID of the route set.
+USERVICE,BASE_LOAD_DAILY_USAGE,Base Load Daily Usage. The base amount of usage per day.
+USERVICE,BASE_USAGE,"Base Usage. The base usage amount, typically in units like kWh or gallons."
+USERVICE,CYCLE_MINIMUM_AMOUNT,Cycle Minimum Amount. The minimum billing amount for a cycle.
+USERVICE,DESCRIPTION,"Description. A description of the service, such as the bank location or type."
+USERVICE,FACILITIES_CHARGE_AMOUNT,Facilities Charge Amount. The fixed charge amount for facilities or infrastructure.
+USERVICE,FACILITIES_CHARGE_DESC_CODE,Facilities Charge Description Code. A code that represents the facilities charge description.
+USERVICE,GPS_LATITUDE,GPS Latitude. Latitude coordinates of the service location.
+USERVICE,GPS_LONGITUDE,GPS Longitude. Longitude coordinates of the service location.
+USERVICE,INSTALLATION_ID,Installation Id. A unique identifier for the installation.
+USERVICE,LOCKED_SERVICE,Locked Service? Indicates whether the service is locked.
+USERVICE,LOCK_DATE,Lock Date. The date on which the service was locked.
+USERVICE,MAXIMUM_USAGE,Maximum Usage. The maximum usage recorded.
+USERVICE,METER_BEHIND_LOCKED_ACCESS,Meter Behind Locked Access? Indicates if the meter is behind a locked access point.
+USERVICE,METER_READING_ROUTE_ID,Meter Reading Route ID. The ID associated with a specific route for meter reading.
+USERVICE,METER_READING_STOP_NUMBER,Meter Reading Stop Number. The stop number for meter reading on the route.
+USERVICE,OVERRIDE_BILL_UNIT_OF_MEASURE,"Override Billing Unit of Measure. The unit of measure for billing, overriding the default."
+USERVICE,PHYSICAL_CONNECT_DATE,Physical Connect Date. The date when the service was physically connected.
+USERVICE,PHYSICAL_DISCONNECT_DATE,Physical Disconnect Date. The date when the service was physically disconnected (null if active).
+USERVICE,PREMISES_ID,Premises Id. The ID representing the physical premises of the service.
+USERVICE,READING_MULTIPLIER,Reading Multiplier. A multiplier applied to meter readings.
+USERVICE,READING_SCHEDULE_TYPE,Reading Schedule Type. The type of schedule for meter readings.
+USERVICE,SERVICE_ID,"Service Id. A unique identifier for the service, represented as a big integer."
+USERVICE,SERVICE_SIZE_TYPE,Service Size Type. The size type of the service.
+USERVICE,SERVICE_TYPE,"Service Type. The type of service, such as 'BF' for base fuel or 'BG' for background service"
+USERVICE,SUMMER_PEAK_USAGE,Summer Peak Usage. The peak usage recorded during the summer season.
+USERVICE,USAGE_FACTOR,Usage Factor. A factor applied to calculate usage.
+USERVICE,WINTER_PEAK_USAGE,Winter Peak Usage. The peak usage recorded during the winter season.
+USVCTYP,ADDITIVE_SUBTRACTIVE_CODE,Additive/Subtractive Code. A code indicating whether the usage is additive ('A') or subtractive ('S').
+USVCTYP,BASED_ON_SERVICE,Based-On Service? Indicates whether the calculation is based on service.
+USVCTYP,BASE_ADDITIONAL_USAGE_PROGRAM,Base Additional Usage Calculation Program. The program used to calculate additional base usage.
+USVCTYP,BASE_USAGE_PROGRAM,Base Usage Calculation Program. The program used to calculate base usage.
+USVCTYP,BILLING_UNIT_OF_MEASURE_TYPE,"Billing Unit Of Measure. The type of billing unit, such as cubic feet or fixed cubic feet."
+USVCTYP,BILL_FROM_VARIABLE_USAGE,Bill from Variable Usage? Indicates whether the bill is calculated based on variable usage.
+USVCTYP,CALCULATE_NONMETERED_USAGE,Calculate Non-Metered Usage? Indicates if non-metered usage is calculated.
+USVCTYP,CONTRACT_USAGE_CALC_PROGRAM,Contract Usage Calculation Program. The program used for contract usage calculation.
+USVCTYP,CONTRACT_USAGE_RATE_ADJ_TYPE,Contract Usage Rate Adjustment Type. The type of adjustment applied to the contract usage rate.
+USVCTYP,DEFAULT_METER_UNIT_OF_MEASURE,Default Meter Unit of Measure. The default unit of measure for the meter.
+USVCTYP,DESCRIPTION,Description. A description of the service type.
+USVCTYP,ELIGIBLE_FOR_METER_DOWNLOAD,Eligible for Meter Selection? Indicates if the service is eligible for meter download.
+USVCTYP,ESTIMATION_TYPE,"Estimation Type. The type of estimation used for service, such as 'MONTH' or 'NOEST'."
+USVCTYP,HALF_ADJUST_METERED_USAGE,Half-Adjust Metered Usage? Indicates if the metered usage is half-adjusted.
+USVCTYP,INCLUDE_IN_USAGE_REPORTING,Include in Usage Reporting? Indicates if the service is included in usage reporting.
+USVCTYP,METERED_SERVICE,Indicates if the service is metered. Datatype: CHAR
+USVCTYP,METERED_USAGE_PRECISION,Precision level for metered usage. Datatype: SMALLINT
+USVCTYP,METER_REQUIRED_FOR_USAGE_CALC,Specifies if a meter is required for usage calculation. Datatype: CHAR
+USVCTYP,NAVIGATION_SUBSET_CODE,Navigation subset code for internal categorization. Datatype: CHAR
+USVCTYP,OVERRIDE_USAGE_CALCULATION,Specifies if usage calculation is overridden. Datatype: CHAR
+USVCTYP,PRE_BILL_SELECT_PROGRAM,Billing pre-selection program identifier. Datatype: CHAR
+USVCTYP,READING_MULTIPLIER_PROGRAM,Program associated with reading multipliers. Datatype: CHAR
+USVCTYP,SEASONAL_BASED_ON_SERVICE,Indicates if the service is seasonal based-on. Datatype: CHAR
+USVCTYP,SERVICE_TYPE,Primary key representing the service type. Datatype: CHAR
+USVCTYP,SORT_ORDER,Order in which services are sorted. Datatype: SMALLINT
+USVCTYP,USAGE_YEAR_END_DAY,The day marking the end of the usage year. Datatype: DECIMAL
+USVCTYP,USAGE_YEAR_END_MONTH,The month marking the end of the usage year. Datatype: DECIMAL
+USVCTYP,USAGE_YEAR_START_DAY,The day marking the start of the usage year. Datatype: DECIMAL
+USVCTYP,USAGE_YEAR_START_MONTH,The month marking the start of the usage year. Datatype: DECIMAL
+USVCTYP,UTILITY_TYPE,"Type of utility service provided. E.g. W for water, G for gas, etc.. Datatype: CHAR"
+USVCTYP,WARN_ON_DEVICE_COUNT_MISMATCH,Flag indicating warning on device count mismatch. Datatype: CHAR
+UUSEHST,BILLING_UNIT_OF_MEASURE_TYPE,Type of unit of measure used for billing. Datatype: CHAR
+UUSEHST,BILLING_USAGE,Usage amount billed against the usage period. Datatype: DECIMAL
+UUSEHST,BILL_ID,Unique identifier for the bill. Datatype: DECIMAL
+UUSEHST,CANCEL_REBILL_ORIGINAL_BILL_ID,Identifier for the original bill in case of cancellation/rebilling. Datatype: DECIMAL
+UUSEHST,SERVICE_ID,Unique identifier for the service. Datatype: BIGINT
+UUSEHST,STATUS_TYPE,"Status of the bill (e.g., Billed, Pending Cancellation). Datatype: CHAR"
+UUSEHST,USAGE_ID,Unique identifier for the usage. Datatype: BIGINT
+UUSEHST,USAGE_PERIOD," Represents the date or period associated with service usage. It indicates the specific month and year when the service usage was recorded. The format is YYYYMM, where 'YYYY' is the year and 'MM' is the month. This field is used to aggregate and analyze service usage over time. It is stored as a DECIMAL value to facilitate numerical operations and comparisons.. Datatype: DECIMAL"
+UUSEHST,USAGE_TYPE,"Type of usage (e.g., Adjustment, Based-On). Datatype: CHAR"
+UACTPRM,,This is the Account / Premises Agreement Table. This table is used to identify the association of the account and premises. Using the start and end date you can identify when each account moved in and moved out of a given premises.
+UBLH,,"This table is the Bill History Summary table, it is used to store all the master data for the bill print history.  This detail includes account data such as name, Account ID, Customer ID, DBA, Bill Class, and Mailing address. It also includes Premises details such as service address. Along with a summary of charges and account balances."
+UCLS,,This is the Bill Class Table. This is a configuration table to define the possible options for Bill Class and set any attributes related to that bill class type.
+UPRM,,"This is the Master Premises Table. This table is used to store all the premises is in the database.  A Premises is a location where a utility company delivers a utility service such as electricity, natural gas, water, sewer, etc. This table also stores most of the premises attributes such as area, workzone, route, and dwelling type."
+UPST,,This is the Premises Status Type Table. This is a configuration tables used to define the possible options for Premises Type and set any attributes related to that premises type.
+URTE,,This is the Route Table. This is a configuration tables used to define the possible options for Route and set any attributes related to that route.  A route is a set of premises whose meters are read on the same day or part of a day by a single meter reader or meter reading crew using a single meter reading device or meter reading book.
+URTESET,,This is the Route Set Table. This is a configuration tables used to define the possible options for Route Set and set any attributes related to that route set. A route set is more commonly referred to as a Cycle. A route set defines a group for routes that will be billed together in a Bill Cycle.
+USERVICE,,"This is the Master Service Table. This table stores the master data related to a service that relates to all service types. Other child service tables will store data specific to unique service types. A Service is a utility offered at a premises, which is part of a service agreement that establishes the billing relationship between the customer account and the utility company. This table also include GPS location (longitude and latitude)"
+USVCTYP,,This is the Service Type Table. This is a configuration tables used to define the possible options for Service Type and set any attributes related to that service type. This table will define billing configurate for each service type.
+UUSEHST,,"This is the Usage History Table. This table is used as a repository for all usage available for billing, and as history of all billed usage.  It is the intent that the set of attributes contained in this table and any subordinate tables will provide a history of all factors used when calculating that usage."

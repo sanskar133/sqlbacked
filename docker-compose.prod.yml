@@ -1,0 +1,16 @@
+services:
+  chat_backend:
+    image: ${DOCKER_HUB_BACKEND_USER}/${REPO_BACKEND}:${TAG}
+    volumes:
+      - /home/aidetic/prequel_ai_volume:/chat_backend/prequel_ai_volume
+    ports:
+      - 5000:5000
+    env_file:
+      - chat_backend/.env
+
+  fabric_analytics_frontend:
+    image: ${DOCKER_HUB_FRONTEND_USER}/${REPO_FRONTEND}:${TAG}
+    ports:
+      - 3002:3002
+    depends_on:
+      - chat_backend

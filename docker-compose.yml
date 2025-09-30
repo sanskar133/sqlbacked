@@ -1,0 +1,22 @@
+services:
+  chat_backend:
+    build:
+      context: chat_backend
+      dockerfile: Dockerfile
+    volumes:
+      - /home/sanskar/Downloads/chat-with-your-data-presales_demo_preview/db/prequel_ai_volume/:/chat_backend/prequel_ai_volume
+    ports:
+      - 5000:5000
+    env_file:
+      - chat_backend/.env
+    
+  fabric_analytics_frontend:
+    image: fabric_analytics_frontend
+    build:
+        context: fabric_analytics_frontend
+        dockerfile: Dockerfile
+    ports:
+      - 3002:3002
+    depends_on:
+      - chat_backend
+

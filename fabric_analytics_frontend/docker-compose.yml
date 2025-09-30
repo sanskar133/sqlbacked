@@ -1,0 +1,8 @@
+services:
+    fabric_analytics_frontend:
+        image: fabric_analytics_frontend
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        ports:
+            - 3002:3002

@@ -1,0 +1,8 @@
+ingest_schema_data:
+  queue_name: 'ingest_schema_data'
+  number_of_worker: '1'
+  task_file_name: 'ingest_schema_data.py'
+log_data:
+  queue_name: 'log_data'
+  number_of_worker: '1'
+  task_file_name: 'log_data.py'
