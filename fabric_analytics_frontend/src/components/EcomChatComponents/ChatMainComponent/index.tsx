@@ -74,7 +74,12 @@ const ChatMainComponent = ({}: ChatMainComponentProps) => {
 
 	const handleWsConnection = () => {
 		console.log("IP:", process.env.REACT_APP_SOCKET_BASE_URL!)
-		const socket = ws(process.env.REACT_APP_SOCKET_BASE_URL!);
+		const socket = ws(
+			process.env.REACT_APP_SOCKET_BASE_URL!,
+			{
+				"transports":  ["websocket"],
+			}
+		);
 		
 		setSocketConnection(socket);
 	};

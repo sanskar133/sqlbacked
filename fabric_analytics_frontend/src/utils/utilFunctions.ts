@@ -259,4 +259,4 @@ export const isJsonString = (str: string) => {
 };
 
 /* Access list for customers */
-export const ACCESS_LIST = ['fabric_access_id_5123', 'prequel_ai_4521', 'presales_demo_ecom','presales_demo_loan'];
+export const ACCESS_LIST = ['fabric_access_id_5123', 'prequel_ai_4521', 'presales_demo_ecom','presales_demo_loan','databricks_sql_test'];
