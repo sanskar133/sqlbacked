@@ -73,16 +73,13 @@ const ChatMainComponent = ({}: ChatMainComponentProps) => {
 	};
 
 	const handleWsConnection = () => {
-		console.log("IP:", process.env.REACT_APP_SOCKET_BASE_URL!)
-		const socket = ws(
-			process.env.REACT_APP_SOCKET_BASE_URL!,
-			{
-				"transports":  ["websocket"],
-			}
-		);
-		
-		setSocketConnection(socket);
-	};
+        // console.log('IPTRASH:', 'ws://10.202.244.4:5000/chat');
+        // console.log('IP:', process.env.REACT_APP_AGGRID_LICENSE);
+        const socket = ws('ws://127.0.0.1:5000/chat', {
+            transports: ['websocket'],
+        });
+        setSocketConnection(socket);
+    };
 
 	useEffect(() => {
 		socketConnection?.on('message', async (data) => {

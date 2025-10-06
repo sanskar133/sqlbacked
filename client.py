@@ -15,8 +15,7 @@ def connect():
     # Step 1: Send CONNECTED message
     sio.emit("message", {
         "message": "CONNECTED",
-        "user_id": "databricks_sql_test"
-        "",     
+        "user_id": "databricks_sql_test",     
         "chat_session_id": "abc123",
         "history": []
     }, namespace="/chat")
