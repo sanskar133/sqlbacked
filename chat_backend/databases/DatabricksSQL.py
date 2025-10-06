@@ -220,15 +220,7 @@ class DatabricksSQL(Database):
     
     
 if __name__ == "__main__":
-    params = {
-        "host": "dbc-1826b481-8bc8.cloud.databricks.com",
-        "http_path": "/sql/1.0/warehouses/9abfa55e36f586b6",
-        "access_token": "dapicfe43d11deae9fed755f89f9f9b1fa8f"}
-
-    db = DatabricksSQL(connection_params=params)
-
-    print(db.database_schema)  # True or False
-
+  
     
 
 
