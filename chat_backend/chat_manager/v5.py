@@ -1,6 +1,8 @@
 import gc
 import json
 import logging
+import time
+import uuid
 
 from chat_manager.base import ChatManager
 from custom_exceptions.ProceedFalseException import ProceedFalseException
@@ -10,6 +12,7 @@ from steps.FetchQueryContext_V3 import FetchQueryContext
 from steps.GenerateSqlQuery import GenerateSqlQuery
 from steps.QueryHistorySummarization_V1 import QueryHistorySummarization
 from steps.ValidateGeneratedSqlQuery_V2 import ValidateGeneratedSqlQuery
+from steps.RetrievedDataAnalyzer import ResponseAnalyzer
 
 logger = logging.getLogger(__name__)
 """
@@ -35,6 +38,7 @@ class ChatManagerV5(ChatManager):
         self.generate_sql_query_object = GenerateSqlQuery(4, self)
         self.validate_generated_sql_query_object = ValidateGeneratedSqlQuery(5, self)
         self.execute_sql_query_object = ExecuteSqlQuery(6, self)
+        self.analyze_retrieved_data_object = ResponseAnalyzer(7, self)
 
         super().__init__(database_object, websocket_object, socket_id)
 
@@ -119,6 +123,7 @@ class ChatManagerV5(ChatManager):
 
             step_data.append(generate_sql_query_step_data)
 
+
             # Post process query step, only if ecommerce
             # logger.info(f"########Generate SQL Query Output###########: {generate_sql_query_output}\n")
 
@@ -157,16 +162,33 @@ class ChatManagerV5(ChatManager):
                 step_data[-1].data["validated_queries"][query_idx]["data"] = []
 
             step_data.append(execute_sql_query_step_data)
+            (
+                retrieved_data_object_output,
+                retrieved_data_object_step_data,
+            ) = self.analyze_retrieved_data_object.run(
+                query_id,
+                query=query_history_summarization_output.get(
+                    "processed_question", websocket_request.message
+                    ),
+                retrieved_data=execute_sql_query_output["data"],
+                benchmark=self.benchmark
+            )
+            step_data.append(retrieved_data_object_step_data)
+
+         
+
+
 
             # print("===========>", execute_sql_query_output)
             if len(execute_sql_query_output["data"]) == 1 and not self.benchmark:
                 self.send_message(
                     _type="FINAL",
-                    message=execute_sql_query_output["message"][0],
+                    message=f"SQL Query Analysis completed",
                     data=execute_sql_query_output["data"][0],
                     query_id=query_id,
                     step_data=step_data,
                 )
+                
                 return
             elif len(execute_sql_query_output["data"]) > 1 and not self.benchmark:
                 self.send_message(

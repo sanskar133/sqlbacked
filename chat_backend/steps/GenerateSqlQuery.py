@@ -46,5 +46,6 @@ class GenerateSqlQuery(Step):
             generated_query = generated_query_data["choices"][0]["message"]["content"]
         except:
             generated_query = None
+        
 
         return json.loads(generated_query)
