@@ -1,0 +1,22 @@
+{
+  "step_id": 6,
+  "display_name": "ExecuteSqlQuery_V2",
+  "message": "SQL Query Executed",
+  "data": {
+    "data": [
+      {
+        "data": [
+          {
+            "country": "solomon islands",
+            "row_count": 4
+          }
+        ]
+      }
+    ],
+    "message": [
+      "COMPLETED"
+    ]
+  },
+  "time_taken": 0.515308,
+  "error_message": null
+}

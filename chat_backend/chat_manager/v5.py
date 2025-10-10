@@ -3,7 +3,7 @@ import json
 import logging
 import time
 import uuid
-
+import mlflow
 from chat_manager.base import ChatManager
 from custom_exceptions.ProceedFalseException import ProceedFalseException
 from steps.CheckQueryDataFeasibility_V2 import CheckQueryDataFeasibility
@@ -13,6 +13,7 @@ from steps.GenerateSqlQuery import GenerateSqlQuery
 from steps.QueryHistorySummarization_V1 import QueryHistorySummarization
 from steps.ValidateGeneratedSqlQuery_V2 import ValidateGeneratedSqlQuery
 from steps.RetrievedDataAnalyzer import ResponseAnalyzer
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 """
@@ -57,6 +58,8 @@ class ChatManagerV5(ChatManager):
                 chat_history=websocket_request.history,
                 benchmark=self.benchmark,
             )
+            print("########Query History Summarization Output###########: ", query_history_summarization_output)
+            print("########Query History Summarization Step Data###########: ", query_history_summarization_step_data)
 
             step_data.append(query_history_summarization_step_data)
 
@@ -72,6 +75,8 @@ class ChatManagerV5(ChatManager):
                 user_id=websocket_request.user_id,
                 benchmark=self.benchmark,
             )
+            print("########Fetch Query Context Output###########: ", fetch_query_context_output)
+            print("########Fetch Query Context Step Data###########: ", fetch_query_context_step_data)  
             step_data.append(fetch_query_context_step_data)
 
             # CheckQueryDataFeasibility step
@@ -89,6 +94,8 @@ class ChatManagerV5(ChatManager):
                 ),
                 benchmark=self.benchmark,
             )
+            print("########Check Query Data Feasibility Output###########: ", check_query_data_feasibility_output)
+            print("########Check Query Data Feasibility Step Data###########: ", check_query_data_feasibility_step_data)
             step_data.append(check_query_data_feasibility_step_data)
 
             # if not check_query_data_feasibility_output.get("answerable", False):
@@ -120,6 +127,8 @@ class ChatManagerV5(ChatManager):
                 query_schema_feasibility_remark="",
                 benchmark=self.benchmark,
             )
+            print("########Generate SQL Query Output###########: ", generate_sql_query_output)
+            print("########Generate SQL Query Step Data###########: ", generate_sql_query_step_data)
 
             step_data.append(generate_sql_query_step_data)
 
@@ -140,7 +149,10 @@ class ChatManagerV5(ChatManager):
                 database_schema=fetch_query_context_output["schema"],
                 benchmark=self.benchmark,
             )
+            print("########Validate Generated SQL Query Output###########: ", validate_generated_sql_query_output)
+            print("########Validate Generated SQL Query Step Data###########: ", validate_generated_sql_query_step_data)
             step_data.append(validate_generated_sql_query_step_data)
+    
 
             # ExecuteSqlQuery step
             logger.info(
@@ -156,10 +168,13 @@ class ChatManagerV5(ChatManager):
                 ],
                 benchmark=self.benchmark,
             )
+            print("########Execute SQL Query Output###########: ", execute_sql_query_output)
+            print("########Execute SQL Query Step Data###########: ", execute_sql_query_step_data)
 
             # removing data from validation step data
             for query_idx in range(len(step_data[-1].data["validated_queries"])):
                 step_data[-1].data["validated_queries"][query_idx]["data"] = []
+            
 
             step_data.append(execute_sql_query_step_data)
             (
@@ -236,6 +251,7 @@ class ChatManagerV5(ChatManager):
                     error_message=str(exc),
                     status_code=400,
                 )
+        
 
         # Garbage collection
         finally:

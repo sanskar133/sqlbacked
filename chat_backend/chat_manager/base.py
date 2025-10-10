@@ -1,15 +1,11 @@
 import json
 import logging
 from datetime import datetime
-
+import mlflow
 from interface import WebsocketResponse
-
+import os 
+from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
-"""
-TODO
-1. Gracefully del connection engines
-"""
-
 
 class ChatManager:
     def __init__(self, database_object, websocket_object, socket_id):
@@ -17,7 +13,6 @@ class ChatManager:
         self.database_object = database_object
         self.websocket_object = websocket_object
         self.websocket_id = socket_id
-
         self.initialized_pipeline = []
 
     def send_message(
@@ -30,8 +25,12 @@ class ChatManager:
         step_data=None,
         status_code=200,
     ):
-        # TODO Update the time taken here while updating query. 2. Jugad of json dumop and load
+        load_dotenv()
+        mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+        mlflow.set_experiment(os.getenv("MLFLOW_EXPERIMENT_PATH"))
 
+
+        # Prepare WebSocket response
         if _type == "INTERMEDIATE":
             websocket_response = WebsocketResponse(
                 message=message,
@@ -41,8 +40,6 @@ class ChatManager:
                 error_message=error_message,
                 data=data,
             )
-            websocket_response = json.loads(websocket_response.json())
-
         else:
             websocket_response = WebsocketResponse(
                 message=message,
@@ -53,32 +50,51 @@ class ChatManager:
                 status_code=status_code,
                 error_message=error_message,
             )
-            websocket_response = json.loads(websocket_response.json())
+        
+        # if step_data:
+        #     st = step_data[-1].step_id  # use last step id for run name
+        #     with mlflow.start_run(run_name=f"Pipeline_Final_Step_Run:{st}"):
+        #         steps_list = [
+        #             {
+        #             "step_id": s.step_id,
+        #             "display_name": s.display_name,
+        #             "message": s.message,
+        #             "data": s.data,
+        #             "time_taken": s.time_taken,
+        #             "error_message": s.error_message,
+        #             }
+        #             for s in step_data
+        #         ]
+        #         mlflow.log_dict({"step_data": steps_list}, "step_data.json")
+        #         mlflow.log_param("final_step_id", step_data[-1].step_id)
+        #         mlflow.log_param("final_step_message", step_data[-1].message)
+        print(type(step_data))
+        for s in step_data or []:
+            print(s.step_id, s.message)
+            mlflow.start_run(run_name=f"Pipeline_Step_Run:{s.step_id} {query_id}")
+            mlflow.log_param("step_id", s.step_id)
+            mlflow.log_param("display_name", s.display_name)
+            mlflow.log_param("message", s.message)
+            mlflow.log_dict(s.data, "data.json")
+            mlflow.end_run()
+            
 
+        # Send over WebSocket
+        websocket_response_dict = json.loads(websocket_response.json())
         logger.info("Emitting Websocket from Chat Manager")
-        self.websocket_object.emit("message", websocket_response, self.websocket_id)
+        self.websocket_object.emit("message", websocket_response_dict, self.websocket_id)
 
-    def run():
-        NotImplementedError()
+    def run(self, websocket_request, query_id):
+        raise NotImplementedError("Please implement your pipeline in this method.")
 
     def run_query(self, websocket_request, query_id):
-        """TODO
-        1. Test behaviour with mulitple connects
-        """
         start_time = datetime.now()
-        self.send_message(
-            _type="INTERMEDIATE", message="Started Processing", query_id=query_id
-        )
+        self.send_message(_type="INTERMEDIATE", message="Started Processing", query_id=query_id)
 
         try:
             self.run(websocket_request, query_id)
         except Exception as exc:
-            logger.info(
-                "Error in processign user query: %s %s",
-                query_id,
-                str(exc),
-                exc_info=True,
-            )
+            logger.error("Error processing user query: %s %s", query_id, str(exc), exc_info=True)
             self.send_message(
                 _type="FINAL",
                 error_message="An error occurred while processing the request.",

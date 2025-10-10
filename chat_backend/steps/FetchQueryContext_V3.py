@@ -10,6 +10,11 @@ from nltk.tokenize import word_tokenize
 from sentence_transformers import SentenceTransformer, util
 from settings import env
 from steps.base import Step
+from dotenv import load_dotenv
+load_dotenv()
+from databricks.vector_search.client import VectorSearchClient
+from utils.getdbx import dbxClient
+
 
 logger = logging.getLogger(__name__)
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,8 +38,12 @@ class FetchQueryContext(Step):
     def __init__(self, *args, **kwargs):
         logging.info(f"Initializing step {self}")
         self.model = emb_model
+        self.vector_store = VectorSearchClient()
+    
+         # flag to control
 
         super().__init__(*args, **kwargs)
+        self.dbx_client = dbxClient()
 
     def input_keys(self):
         return ["question"]
@@ -56,6 +65,14 @@ class FetchQueryContext(Step):
                 if not word_token.lower() in stop_words
             ]
         )
+        question_embedding = self.model.encode(
+            [filtered_question], convert_to_tensor=True)
+        question_embedding = question_embedding[0].tolist()
+        
+        if user_id == 'databricks_sql_test':
+            return self.dbx_client.get_description_index('workspace.default.description',question_embedding,k)
+            
+
 
         # load local database
         db_path = os.path.join(
@@ -98,6 +115,16 @@ class FetchQueryContext(Step):
                 if not word_token.lower() in stop_words
             ]
         )
+        question_embedding = self.model.encode(
+            [filtered_question], convert_to_tensor=True)
+        question_embedding = question_embedding[0].tolist()    
+        if user_id == 'databricks_sql_test':
+            return self.dbx_client.get_query_index('workspace.default.questions',question_embedding,k)
+            
+
+
+            
+
 
         # load local database
         db_path = os.path.join(
@@ -140,6 +167,7 @@ class FetchQueryContext(Step):
 
     def _process_unstructured_schema(self, question: str, user_id: str):
         # TODO: get top 10 relevant column embeddings -> corresponding unique tables names
+        
         if user_id == "presales_demo_ecom":
             from sample_database.presales_demo_ecom_schema import (
                 table_and_descriptions,
@@ -216,11 +244,20 @@ class FetchQueryContext(Step):
                 schema += "\n"
 
         return schema.strip(), feasibility_schema.strip()
+        
+
+
+
+    
 
     def __call__(self, question: str, user_id: str, *args, **kwargs):
         """
         Get schema from datamodels_config_new
         """
+        if user_id == "databricks_sql_test":
+            feasibility_schema =  self._get_relevant_tables(question, user_id)
+            schema = self._get_k_most_relevant_queries_from_local_db(question, user_id)
+            return {"schema": schema, "feasibility_schema": feasibility_schema}
 
         user_schema_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -239,5 +276,6 @@ class FetchQueryContext(Step):
             feasibility_schema = schema
 
         logger.info(schema)
+
 
         return {"schema": schema, "feasibility_schema": feasibility_schema}

@@ -1,0 +1,11 @@
+{
+  "step_id": 1,
+  "display_name": "QueryHistorySummarization",
+  "message": "User Question Summarized based on History",
+  "data": {
+    "processed_question": "What is the country with the highest row count in the customer table?",
+    "history": ""
+  },
+  "time_taken": 0.950779,
+  "error_message": null
+}

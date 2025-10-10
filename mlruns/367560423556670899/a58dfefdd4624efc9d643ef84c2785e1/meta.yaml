@@ -1,0 +1,14 @@
+artifact_uri: file:///chat_backend/mlruns/367560423556670899/a58dfefdd4624efc9d643ef84c2785e1/artifacts
+end_time: 1759842267279
+entry_point_name: ''
+experiment_id: '367560423556670899'
+lifecycle_stage: active
+run_id: a58dfefdd4624efc9d643ef84c2785e1
+run_name: Pipeline_Steps_Run
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759842267274
+status: 3
+tags: []
+user_id: root
