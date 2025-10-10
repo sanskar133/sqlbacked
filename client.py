@@ -24,7 +24,7 @@ def connect():
 
     # Step 2: Send a query
     sio.emit("message", {
-        "message": "country with row count in customer table",
+        "message": "total principal by loan status",
         "user_id": "databricks_sql_test",     
         "chat_session_id": "abc123",
         "history": []

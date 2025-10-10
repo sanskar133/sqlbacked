@@ -7,7 +7,7 @@ from databases.base import Database, DatabaseFields
 from databricks import sql
 from dotenv import load_dotenv
 load_dotenv()  # loads .env file
-
+import mlflow
 logger = logging.getLogger(__name__)
 
 

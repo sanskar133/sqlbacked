@@ -1,0 +1,14 @@
+artifact_uri: file:///chat_backend/mlruns/367560423556670899/bcf57ff9e8c8408aa4fd6692235cd506/artifacts
+end_time: 1759843307082
+entry_point_name: ''
+experiment_id: '367560423556670899'
+lifecycle_stage: active
+run_id: bcf57ff9e8c8408aa4fd6692235cd506
+run_name: Step_7_QueryHistResponseAnalyzer
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759843307078
+status: 3
+tags: []
+user_id: root

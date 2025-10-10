@@ -13,6 +13,7 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip setuptools wheel
 RUN python -m pip install -r requirements.txt
+RUN pip install mlflow
 
 RUN rm -rf /var/cache/apk/* \
     && apt-get remove gcc -y \

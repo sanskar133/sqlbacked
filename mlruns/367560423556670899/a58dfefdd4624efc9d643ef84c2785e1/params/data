@@ -1,0 +1,1 @@
+{'query_schema_feasibility_remark': "The question is answerable using a SQL query. We can count the number of rows for each country in the 'customers' table and identify the country with the highest count.", 'follow_up_question': '', 'answerable': True}

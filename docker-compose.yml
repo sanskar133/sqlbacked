@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - /home/sanskar/Downloads/chat-with-your-data-presales_demo_preview/db/prequel_ai_volume/:/chat_backend/prequel_ai_volume
+      - /home/sanskar/Downloads/chat-with-your-data-presales_demo_preview/mlruns:/chat_backend/mlruns   # <-- mount mlruns
     ports:
       - 5000:5000
     env_file:

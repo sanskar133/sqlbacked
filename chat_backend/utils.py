@@ -1,6 +1,7 @@
 import importlib.util
 import logging
 
+from databricks.vector_search.client import VectorSearchClient
 logger = logging.getLogger(__name__)
 
 
@@ -107,3 +108,4 @@ def get_step_output_given_query_response_rows(step_data, step_name: str, key_nam
     except Exception as exc:
         logger.error(exc, exc_info=True)
         return None
+    
