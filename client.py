@@ -15,7 +15,7 @@ def connect():
     # Step 1: Send CONNECTED message
     sio.emit("message", {
         "message": "CONNECTED",
-        "user_id": "presales_demo_ecom",     
+        "user_id": "databricks_sql_test",     
         "chat_session_id": "abc123",
         "history": []
     }, namespace="/chat")
@@ -24,8 +24,8 @@ def connect():
 
     # Step 2: Send a query
     sio.emit("message", {
-        "message": "give rows for loan_status = 'PAIDOFF' in loan_payments table",
-        "user_id": "presales_demo_ecom",     
+        "message": "country with row count in customer table",
+        "user_id": "databricks_sql_test",     
         "chat_session_id": "abc123",
         "history": []
     }, namespace="/chat")

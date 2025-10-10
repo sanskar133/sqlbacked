@@ -3,7 +3,7 @@ import sqlite3
 import os
 from random import choice, randint
 from datetime import datetime, timedelta
-db_path = "/home/sanskar/Downloads/chat-with-your-data-presales_demo_preview/db/prequel_ai_volume/presales_demo_loan.db"
+db_path = "/home/aidetic/Desktop/aidetic/sqlbacked/chat_backend/prequel_ai_volume/presales_demo_loan.db"
 
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
@@ -72,12 +72,12 @@ conn.close()
 print(f"Inserted {len(sample_rows)} new rows into the loan_payments table.")
 
 
-Server response: 
-{'query_id': 'ee06cdcd-42ee-405f-a8fb-dfedd7dffc14', 'message': 'Generated SQL Query Validated', 'status_code': 200, 'error_message': None, 
- 'data': {'proceed': True, 'validated_queries':
-           [{'data':
-              [{'Loan_ID': 'xqd20166250', 'loan_status': 'PAIDOFF', 'Principal': 1000, 'terms': 15, 
-                'effective_date': '2016-09-08', 'due_date': '2016-09-23', 'paid_off_time': '2016-09-22 14:30', 
-                'past_due_days': 0.0, 'age': 30, 'education': 'Bachelor', 'Gender': 'male'},
-                  {'Loan_ID': 'xqd20166252', 'loan_status': 'PAIDOFF', 'Principal': 1500, 'terms': 30, 'effective_date': '2016-09-01', 'due_date': '2016-10-01', 'paid_off_time': '2016-09-28 10:00', 'past_due_days': 0.0, 'age': 45, 'education': 'College', 'Gender': 'male'},
-                 {'Loan_ID': 'xqd20166272', 'loan_status': 'PAIDOFF', 'Principal': 549, 'terms': 15, 'effective_date': '2016-09-21', 'due_date': '2016-10-06', 'paid_off_time': '2016-10-04 00:00', 'past_due_days': None, 'age': 56, 'education': 'College', 'Gender': 'male'}], 'fixed_query': "SELECT * FROM loan_payments WHERE LOWER(loan_status) = 'paidoff';", 'query_after_regex_match': "SELECT * FROM loan_payments WHERE LOWER(loan_status) = 'paidoff';", 'query_validation_remark': 'COMPLETED', 'no_attempts': 0}]}, 'step_data': [], 'type': 'INTERMEDIATE'}
+# Server response: 
+# {'query_id': 'ee06cdcd-42ee-405f-a8fb-dfedd7dffc14', 'message': 'Generated SQL Query Validated', 'status_code': 200, 'error_message': None, 
+#  'data': {'proceed': True, 'validated_queries':
+#            [{'data':
+#               [{'Loan_ID': 'xqd20166250', 'loan_status': 'PAIDOFF', 'Principal': 1000, 'terms': 15, 
+#                 'effective_date': '2016-09-08', 'due_date': '2016-09-23', 'paid_off_time': '2016-09-22 14:30', 
+#                 'past_due_days': 0.0, 'age': 30, 'education': 'Bachelor', 'Gender': 'male'},
+#                   {'Loan_ID': 'xqd20166252', 'loan_status': 'PAIDOFF', 'Principal': 1500, 'terms': 30, 'effective_date': '2016-09-01', 'due_date': '2016-10-01', 'paid_off_time': '2016-09-28 10:00', 'past_due_days': 0.0, 'age': 45, 'education': 'College', 'Gender': 'male'},
+#                  {'Loan_ID': 'xqd20166272', 'loan_status': 'PAIDOFF', 'Principal': 549, 'terms': 15, 'effective_date': '2016-09-21', 'due_date': '2016-10-06', 'paid_off_time': '2016-10-04 00:00', 'past_due_days': None, 'age': 56, 'education': 'College', 'Gender': 'male'}], 'fixed_query': "SELECT * FROM loan_payments WHERE LOWER(loan_status) = 'paidoff';", 'query_after_regex_match': "SELECT * FROM loan_payments WHERE LOWER(loan_status) = 'paidoff';", 'query_validation_remark': 'COMPLETED', 'no_attempts': 0}]}, 'step_data': [], 'type': 'INTERMEDIATE'}

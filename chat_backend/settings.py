@@ -68,7 +68,22 @@ class ENV:
                     }
                 }
             )
-            
+        
+        if os.getenv("ACCESS_ID_DATABRICKS_SQL"):
+            self.CONNECTION_META_DATA.update(
+                {
+                    os.getenv("ACCESS_ID_DATABRICKS_SQL"): {
+                        "database_type": os.getenv("DB_TYPE_DATABRICKS_SQL"),
+                        "database_meta_data": {
+                            "server_hostname": os.getenv("DB_HOST_DATABRICKS_SQL"),
+                            "http_path": os.getenv("DB_HTTP_PATH_DATABRICKS_SQL"),
+                            "access_token": decrypt_envvar(
+                                os.getenv("DB_ACCESS_TOKEN_DATABRICKS_SQL")
+                            ),
+                        },
+                    }
+                }
+            )
         # Analytics Engine ENV Variables
 
         self.SUPPORTED_DATABASE_TYPES = [

@@ -43,6 +43,7 @@ const ChatMainComponent = ({}: ChatMainComponentProps) => {
 	const [chats, setChats] = useState<any[]>([]);
 	const [tempChats, setTempChats] = useState<any>({});
 	const [isChatConnected, setIsChatConnected] = useState<boolean>(false);
+	const [newChatKey, setNewChatKey] = useState<number | undefined>(undefined);
 
 	const handleNewSession = async () => {
 		try {
@@ -69,13 +70,14 @@ const ChatMainComponent = ({}: ChatMainComponentProps) => {
 			});
 
 			setSelectedChatSession(data);
+			setNewChatKey(Math.random()); // Generate new key to reset input centering
 		} catch (error) {}
 	};
 
 	const handleWsConnection = () => {
 		// console.log('IPTRASH:', 'ws://10.202.244.4:5000/chat');
 		// console.log('IP:', process.env.REACT_APP_AGGRID_LICENSE);
-		const socket = ws(process.env.REACT_APP_SOCKET_BASE_URL!, {
+		const socket = ws('ws://127.0.0.1:5000/chat', {
 			transports: ['websocket'],
 		});
 		setSocketConnection(socket);
@@ -84,6 +86,7 @@ const ChatMainComponent = ({}: ChatMainComponentProps) => {
 	useEffect(() => {
 		socketConnection?.on('message', async (data) => {
 			try {
+				console.log('data', data);
 				if (data.type === 'INTERMEDIATE') {
 					setIsMessageProcessing(data.message);
 				}
@@ -469,6 +472,7 @@ const ChatMainComponent = ({}: ChatMainComponentProps) => {
 				selectedChatSession={selectedChatSession}
 				//handleAskQFromSuggestions={handleAskQFromSuggestions}
 				isMessageLoading={isMessageLoading}
+				newChatKey={newChatKey} // Pass the key to reset input centering
 			/>
 		</Box>
 	);

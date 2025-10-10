@@ -1,10 +1,12 @@
 import { Box, OutlinedInput, InputAdornment } from '@mui/material';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChatSendIcon } from '../../shared/AppIcons';
 import UserChatMessage from './UserChatMessage';
 import BotChatMessage from './BotChatMessage';
 import { ChatSessionData } from '../../../types/apis';
 import ChatMessageLoaderSkeleton from './ChatMessageLoaderSkeleton';
+import { motion, AnimatePresence } from 'framer-motion';
+
 interface ChatMainWindowComponentPropse {
 	setMessage: (data: any) => void;
 	handleAskQuestions: (e: any) => void;
@@ -15,6 +17,7 @@ interface ChatMainWindowComponentPropse {
 	selectedChatSession?: ChatSessionData;
 	//handleAskQFromSuggestions?: (data: any) => void;
 	isMessageLoading: boolean;
+	newChatKey?: number;
 }
 
 const ChatMainWindowComponent = ({
@@ -27,13 +30,38 @@ const ChatMainWindowComponent = ({
 	selectedChatSession,
 	//handleAskQFromSuggestions,
 	isMessageLoading,
+	newChatKey,
 }: ChatMainWindowComponentPropse) => {
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+	const [isInputCentered, setIsInputCentered] = useState(() => {
+		// Always reset to true when newChatKey changes (new chat session)
+		if (newChatKey !== undefined) {
+			return true;
+		}
+		// Check if input was previously centered by checking sessionStorage
+		const savedState = sessionStorage.getItem('chatInputCentered');
+		return savedState !== null ? JSON.parse(savedState) : true;
+	});
+
 	const scrollToBottom = () => {
 		if (messagesEndRef.current) {
 			messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
+
+	// Save input centering state to sessionStorage whenever it changes
+	useEffect(() => {
+		sessionStorage.setItem('chatInputCentered', JSON.stringify(isInputCentered));
+	}, [isInputCentered]);
+
+	// Reset input centering when new chat is created
+	useEffect(() => {
+		if (chats && chats.length > 0) {
+			setIsInputCentered(false);
+		} else if (newChatKey !== undefined) {
+			setIsInputCentered(true);
+		}
+	}, [chats, newChatKey]);
 
 	useEffect(() => {
 		if (isMessageProcessing === null) {
@@ -43,10 +71,6 @@ const ChatMainWindowComponent = ({
 		}
 	}, [chats, isMessageProcessing]);
 
-	/* const handleSubmitSuggestion = (q: any) => {
-		if (handleAskQFromSuggestions) handleAskQFromSuggestions(q);
-	};
- */
 	return (
 		<>
 			<Box
@@ -69,190 +93,215 @@ const ChatMainWindowComponent = ({
 					}}
 					className="string-background fab-hide-scrollbar"
 				>
-					{isMessageLoading ? (
-						<ChatMessageLoaderSkeleton />
-					) : (
-						<Box>
-							{chats?.map(
-								(
-									el: {
-										message: string;
-										type: string;
-										query_id: string;
-										feedback: boolean | null | undefined;
-										created_at?: undefined | string;
-									},
-									key,
-								) => {
-									if (el.type === 'user')
-										return (
-											<React.Fragment key={key}>
+					<AnimatePresence mode="wait">
+						{isMessageLoading ? (
+							<motion.div
+								key="skeleton"
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -20 }}
+								transition={{ duration: 0.3, ease: 'easeOut' }}
+							>
+								<ChatMessageLoaderSkeleton />
+							</motion.div>
+						) : (
+							<motion.div
+								key="messages"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 0.3 }}
+							>
+								{chats?.map(
+									(
+										el: {
+											message: string;
+											type: string;
+											query_id: string;
+											feedback: boolean | null | undefined;
+											created_at?: undefined | string;
+										},
+										key,
+									) => (
+										<motion.div
+											key={key}
+											initial={{ opacity: 0, y: 10 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{
+												duration: 0.3,
+												delay: key * 0.05,
+												ease: 'easeOut',
+											}}
+										>
+											{el.type === 'user' ? (
 												<UserChatMessage
 													message={el.message}
 													created_at={el?.created_at}
 												/>
-											</React.Fragment>
-										);
-
-									if (el.type === 'bot')
-										return (
-											<React.Fragment key={key}>
+											) : (
 												<BotChatMessage
 													isProcessing={false}
 													message={el.message}
 												/>
-											</React.Fragment>
-										);
-
-									return <></>;
-								},
-							)}
-							{isMessageProcessing && (
-								<>
-									<BotChatMessage
-										isProcessing={true}
-										processingMessage={isMessageProcessing}
-										message={''}
-									/>
-								</>
-							)}
-						</Box>
-					)}
+											)}
+										</motion.div>
+									),
+								)}
+								{isMessageProcessing && (
+									<motion.div
+										initial={{ opacity: 0, y: 10 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.3, ease: 'easeOut' }}
+									>
+										<BotChatMessage
+											isProcessing={true}
+											processingMessage={isMessageProcessing}
+											message={''}
+										/>
+									</motion.div>
+								)}
+							</motion.div>
+						)}
+					</AnimatePresence>
 
 					<Box mb="50px" ref={messagesEndRef} />
 				</Box>
-				{/* {size(chats) === 0 && isSharePage === false && !isMessageLoading && (
-					<Box
-						sx={{
-							position: 'absolute',
-							bottom: '50px',
-							width: '100%',
-							padding: '20px 15%',
-							// transform: 'translate(0%, -50%)',
-						}}
-					>
-						<Grid container spacing={1} sx={{ paddingBlock: '30px' }}>
-							{map(selectedConnection?.sample_questions, (question, index) => (
-								<Grid
-									item
-									xs={6}
-									onClick={(e) => handleSubmitSuggestion(question)}
-									key={index}
-								>
-									<Box
-										sx={{
-											display: 'flex',
-											flex: 1,
-											height: '100%',
-											border: '1px solid #E4E7EC',
-											borderRadius: '8px',
-											padding: '10px 12px',
-											cursor: 'pointer',
-											background: 'transparent',
-											color: '#5E5468',
-											':hover': {
-												background: '#F1F3F5',
-												color: '#101828',
-												'& .straight-icon': {
-													// Use a class to target the StraightIcon
-													visibility: 'visible',
-												},
-											},
-										}}
-										className="chat-page-bulb-icon-crtl"
-									>
-										<BulbIcon
-											sx={{
-												fontSize: '16px',
-												color: 'transparent',
-											}}
-											className="chat-page-bulb-icon"
-										/>
-										<Typography
-											sx={{
-												color: 'inherit',
-												fontSize: '14px',
-												fontWeight: 400,
-												lineHeight: '20px',
-												marginLeft: '8px',
-												width: '80%',
-											}}
-										>
-											{question}
-										</Typography>
-										<ArrowIcon
-											className="straight-icon"
-											sx={{
-												color: 'inherit',
-												marginLeft: '10px',
-												visibility: 'hidden',
-												fontSize: '20px',
-											}}
-										/>
-									</Box>
-								</Grid>
-							))}
-						</Grid>
-					</Box>
-				)} */}
 				{isSharePage === true ? null : (
-					<Box
-						sx={{
-							position: 'absolute',
-							bottom: '0px',
-							width: '100%',
-							padding: '20px 15%',
-						}}
-					>
-						<form
-							onSubmit={handleAskQuestions}
+					<AnimatePresence>
+						<motion.div
+							key={isInputCentered ? 'centered' : 'bottom'}
+							initial={{ opacity: 0, y: isInputCentered ? 20 : -20 }}
+							animate={{
+								opacity: 1,
+								y: 0,
+								bottom: isInputCentered ? '50%' : '0px',
+								transform: isInputCentered ? 'translateY(50%)' : 'translateY(0%)',
+							}}
+							exit={{ opacity: 0, y: isInputCentered ? 20 : -20 }}
+							transition={{
+								duration: 0.3,
+								ease: 'easeInOut',
+								type: 'spring',
+								stiffness: 100,
+								damping: 15,
+							}}
 							style={{
-								boxShadow: '0px 4px 7px 0px rgba(208, 213, 221, 0.30)',
-								borderRadius: '8px',
+								position: 'absolute',
+								width: '100%',
+								padding: '20px 15%',
 							}}
 						>
-							<OutlinedInput
+							<Box
+								component="form"
+								onSubmit={(e) => {
+									setIsInputCentered(false);
+									handleAskQuestions(e);
+								}}
 								sx={{
-									width: '100%',
-									border: 'none !important',
-									'& .MuiOutlinedInput-notchedOutline': {
-										borderColor: 'transparent',
+									display: 'flex',
+									alignItems: 'center',
+									gap: 2,
+									backgroundColor: '#ffffff',
+									borderRadius: '16px',
+									padding: '12px 20px',
+									boxShadow:
+										'0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06)',
+									border: '1px solid rgba(0, 0, 0, 0.08)',
+									transition: 'all 0.2s ease-in-out',
+									'&:hover': {
+										boxShadow:
+											'0 6px 25px rgba(0, 0, 0, 0.12), 0 3px 12px rgba(0, 0, 0, 0.08)',
+										transform: 'translateY(-1px)',
+									},
+									'&:focus-within': {
+										boxShadow:
+											'0 8px 30px rgba(0, 0, 0, 0.15), 0 4px 15px rgba(0, 0, 0, 0.10)',
+										borderColor: 'rgba(251, 98, 56, 0.3)',
+										transform: 'translateY(-1px)',
 									},
 								}}
-								autoComplete="off"
-								id="outlined-adornment-weight"
-								endAdornment={
-									<InputAdornment position="end" onClick={handleAskQuestions}>
-										<Box
-											sx={{
-												minWidth: '28px',
-												minHeight: '28px',
-												borderRadius: '4px',
-												display: 'flex',
-												alignItems: 'center',
-												justifyContent: 'center',
-												cursor: message === '' ? 'not-allowed' : 'pointer',
-												background:
-													message === ''
-														? 'rgba(251, 98, 56, 0.7)'
-														: '#FB6238',
-											}}
-										>
-											<ChatSendIcon />
-										</Box>
-									</InputAdornment>
-								}
-								aria-describedby="outlined-weight-helper-text"
-								inputProps={{
-									'aria-label': 'weight',
-								}}
-								value={message}
-								onChange={(e) => {
-									setMessage(e.target.value);
-								}}
-							/>
-						</form>
-					</Box>
+							>
+								<OutlinedInput
+									placeholder="Type your message here..."
+									sx={{
+										flex: 1,
+										'& .MuiOutlinedInput-root': {
+											'& fieldset': {
+												border: 'none',
+											},
+											'&:hover fieldset': {
+												border: 'none',
+											},
+											'&.Mui-focused fieldset': {
+												border: 'none',
+											},
+											'& input': {
+												padding: '12px 0',
+												fontSize: '16px',
+												lineHeight: 1.5,
+												color: '#1a1a1a',
+												'&::placeholder': {
+													color: '#8B8B8B',
+													opacity: 0.8,
+												},
+											},
+										},
+									}}
+									autoComplete="off"
+									value={message}
+									onChange={(e) => {
+										setMessage(e.target.value);
+									}}
+								/>
+								<Box
+									component="button"
+									type="submit"
+									disabled={message === '' || isMessageProcessing !== null}
+									sx={{
+										minWidth: '44px',
+										minHeight: '44px',
+										borderRadius: '12px',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										cursor:
+											message === '' || isMessageProcessing !== null
+												? 'not-allowed'
+												: 'pointer',
+										background:
+											message === '' || isMessageProcessing !== null
+												? 'linear-gradient(135deg, #E0E0E0 0%, #CCCCCC 100%)'
+												: 'linear-gradient(135deg, #FB6238 0%, #E55A2B 100%)',
+										transition: 'all 0.2s ease-in-out',
+										border: 'none',
+										outline: 'none',
+										boxShadow:
+											message === '' || isMessageProcessing !== null
+												? 'none'
+												: '0 2px 8px rgba(251, 98, 56, 0.3)',
+										'&:hover':
+											message !== '' && isMessageProcessing === null
+												? {
+														transform: 'scale(1.05)',
+														boxShadow:
+															'0 4px 12px rgba(251, 98, 56, 0.4)',
+														background:
+															'linear-gradient(135deg, #E55A2B 0%, #D44A1F 100%)',
+													}
+												: {},
+										'&:active':
+											message !== '' && isMessageProcessing === null
+												? {
+														transform: 'scale(0.98)',
+													}
+												: {},
+									}}
+								>
+									<ChatSendIcon />
+								</Box>
+							</Box>
+						</motion.div>
+					</AnimatePresence>
 				)}
 			</Box>
 		</>

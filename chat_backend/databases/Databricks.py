@@ -5,6 +5,8 @@ from typing import Any
 
 from databases.base import Database, DatabaseFields
 from databricks import sql
+from dotenv import load_dotenv
+load_dotenv()  # loads .env file
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +15,7 @@ class Databricks(Database):
     display_name: str = "Databricks"
     description: str = "Connect Your Databricks Database"
 
-    connection_details: dict = {}
+    connection_details: dict 
     database_engine: Any = None
 
     connection_type: str = "STANDARD"
@@ -53,6 +55,7 @@ class Databricks(Database):
     def database_schema(self):
         """Get Schema of the Databricks Schema"""
         logger.info("Fetching Database schema.")
+        logger.info(f"Catalog name: {self.catalog_name}")   
         try:
             connection_params = {
                 field.field_name: self.connection_details[field.field_name]
@@ -440,3 +443,22 @@ class Databricks(Database):
 
     def get_column_data_types_with_sample_value():
         pass
+
+if __name__ == "__main__":
+    # Create an instance of your Databricks class
+   
+
+    # Provide your credentials
+    params = {
+        "server_hostname": os.getenv("DB_HOST_DATABRICKS_SQL"),
+        "http_path": os.getenv("DB_HTTP_PATH_DATABRICKS_SQL"),
+        "access_token": os.getenv("DB_ACCESS_TOKEN_DATABRICKS_SQL")
+    }
+    db = Databricks(connection_details=params)
+
+    # Check if the credentials are valid
+    if db.has_valid_credentials:
+        print("✅ Databricks credentials are valid!")
+    else:
+        print("❌ Databricks credentials are invalid.")
+    print(db.execute_query('select principal from loan_payments '))  # True or False
