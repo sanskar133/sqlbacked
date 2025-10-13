@@ -58,8 +58,14 @@ class ChatManagerV5(ChatManager):
                 chat_history=websocket_request.history,
                 benchmark=self.benchmark,
             )
-            print("########Query History Summarization Output###########: ", query_history_summarization_output)
-            print("########Query History Summarization Step Data###########: ", query_history_summarization_step_data)
+            print(
+                "########Query History Summarization Output###########: ",
+                query_history_summarization_output,
+            )
+            print(
+                "########Query History Summarization Step Data###########: ",
+                query_history_summarization_step_data,
+            )
 
             step_data.append(query_history_summarization_step_data)
 
@@ -75,8 +81,14 @@ class ChatManagerV5(ChatManager):
                 user_id=websocket_request.user_id,
                 benchmark=self.benchmark,
             )
-            print("########Fetch Query Context Output###########: ", fetch_query_context_output)
-            print("########Fetch Query Context Step Data###########: ", fetch_query_context_step_data)  
+            print(
+                "########Fetch Query Context Output###########: ",
+                fetch_query_context_output,
+            )
+            print(
+                "########Fetch Query Context Step Data###########: ",
+                fetch_query_context_step_data,
+            )
             step_data.append(fetch_query_context_step_data)
 
             # CheckQueryDataFeasibility step
@@ -94,8 +106,14 @@ class ChatManagerV5(ChatManager):
                 ),
                 benchmark=self.benchmark,
             )
-            print("########Check Query Data Feasibility Output###########: ", check_query_data_feasibility_output)
-            print("########Check Query Data Feasibility Step Data###########: ", check_query_data_feasibility_step_data)
+            print(
+                "########Check Query Data Feasibility Output###########: ",
+                check_query_data_feasibility_output,
+            )
+            print(
+                "########Check Query Data Feasibility Step Data###########: ",
+                check_query_data_feasibility_step_data,
+            )
             step_data.append(check_query_data_feasibility_step_data)
 
             # if not check_query_data_feasibility_output.get("answerable", False):
@@ -127,11 +145,16 @@ class ChatManagerV5(ChatManager):
                 query_schema_feasibility_remark="",
                 benchmark=self.benchmark,
             )
-            print("########Generate SQL Query Output###########: ", generate_sql_query_output)
-            print("########Generate SQL Query Step Data###########: ", generate_sql_query_step_data)
+            print(
+                "########Generate SQL Query Output###########: ",
+                generate_sql_query_output,
+            )
+            print(
+                "########Generate SQL Query Step Data###########: ",
+                generate_sql_query_step_data,
+            )
 
             step_data.append(generate_sql_query_step_data)
-
 
             # Post process query step, only if ecommerce
             # logger.info(f"########Generate SQL Query Output###########: {generate_sql_query_output}\n")
@@ -149,10 +172,15 @@ class ChatManagerV5(ChatManager):
                 database_schema=fetch_query_context_output["schema"],
                 benchmark=self.benchmark,
             )
-            print("########Validate Generated SQL Query Output###########: ", validate_generated_sql_query_output)
-            print("########Validate Generated SQL Query Step Data###########: ", validate_generated_sql_query_step_data)
+            print(
+                "########Validate Generated SQL Query Output###########: ",
+                validate_generated_sql_query_output,
+            )
+            print(
+                "########Validate Generated SQL Query Step Data###########: ",
+                validate_generated_sql_query_step_data,
+            )
             step_data.append(validate_generated_sql_query_step_data)
-    
 
             # ExecuteSqlQuery step
             logger.info(
@@ -168,13 +196,18 @@ class ChatManagerV5(ChatManager):
                 ],
                 benchmark=self.benchmark,
             )
-            print("########Execute SQL Query Output###########: ", execute_sql_query_output)
-            print("########Execute SQL Query Step Data###########: ", execute_sql_query_step_data)
+            print(
+                "########Execute SQL Query Output###########: ",
+                execute_sql_query_output,
+            )
+            print(
+                "########Execute SQL Query Step Data###########: ",
+                execute_sql_query_step_data,
+            )
 
             # removing data from validation step data
             for query_idx in range(len(step_data[-1].data["validated_queries"])):
                 step_data[-1].data["validated_queries"][query_idx]["data"] = []
-            
 
             step_data.append(execute_sql_query_step_data)
             (
@@ -184,24 +217,31 @@ class ChatManagerV5(ChatManager):
                 query_id,
                 query=query_history_summarization_output.get(
                     "processed_question", websocket_request.message
-                    ),
+                ),
                 retrieved_data=execute_sql_query_output["data"],
-                benchmark=self.benchmark
+                benchmark=self.benchmark,
             )
-            print("########Retrieved Data Analyzer Output###########: ", retrieved_data_object_output)
-            print("########Retrieved Data Analyzer Step Data###########: ", retrieved_data_object_step_data)
+            print(
+                "########Retrieved Data Analyzer Output###########: ",
+                retrieved_data_object_output,
+            )
+            print(
+                "########Retrieved Data Analyzer Step Data###########: ",
+                retrieved_data_object_step_data,
+            )
             step_data.append(retrieved_data_object_step_data)
             print("########Final Step Data###########: ", step_data)
             steps_list = []
-            for s in step_data: 
-                 step_dict = {
-                      "step_id": s.step_id,
-                      "display_name": s.display_name,
-                      "message": s.message,
-                      "error_message": s.error_message,
-                      "data": json.dumps(s.data),  
-                      "time_taken": s.time_taken
-                      }
+            for s in step_data:
+                step_dict = {
+                    "step_id": s.step_id,
+                    "display_name": s.display_name,
+                    "message": s.message,
+                    "error_message": s.error_message,
+                    "data": json.dumps(s.data),
+                    "time_taken": s.time_taken,
+                }
+
             print("STEP DICT", step_dict)
             steps_list.append(step_dict)
             df_steps = pd.DataFrame(steps_list)
@@ -209,10 +249,6 @@ class ChatManagerV5(ChatManager):
                 df_steps.to_csv("all_steps_output.csv", index=False)
                 mlflow.log_artifact("all_steps_output.csv")
                 print("Logged all steps data to MLflow as artifact.")
-
-         
-
-
 
             # print("===========>", execute_sql_query_output)
             if len(execute_sql_query_output["data"]) == 1 and not self.benchmark:
@@ -223,7 +259,7 @@ class ChatManagerV5(ChatManager):
                     query_id=query_id,
                     step_data=step_data,
                 )
-                
+
                 return
             elif len(execute_sql_query_output["data"]) > 1 and not self.benchmark:
                 self.send_message(
@@ -271,7 +307,6 @@ class ChatManagerV5(ChatManager):
                     error_message=str(exc),
                     status_code=400,
                 )
-        
 
         # Garbage collection
         finally:

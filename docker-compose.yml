@@ -4,20 +4,19 @@ services:
       context: chat_backend
       dockerfile: Dockerfile
     volumes:
-      - /home/sanskar/Downloads/chat-with-your-data-presales_demo_preview/db/prequel_ai_volume/:/chat_backend/prequel_ai_volume
-      - /home/sanskar/Downloads/chat-with-your-data-presales_demo_preview/mlruns:/chat_backend/mlruns   # <-- mount mlruns
+      - /db/prequel_ai_volume/:/chat_backend/prequel_ai_volume
+      - /mlruns:/chat_backend/mlruns # <-- mount mlruns
     ports:
       - 5000:5000
     env_file:
       - chat_backend/.env
-    
+
   fabric_analytics_frontend:
     image: fabric_analytics_frontend
     build:
-        context: fabric_analytics_frontend
-        dockerfile: Dockerfile
+      context: fabric_analytics_frontend
+      dockerfile: Dockerfile
     ports:
       - 3002:3002
     depends_on:
       - chat_backend
-
