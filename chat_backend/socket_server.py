@@ -1,10 +1,10 @@
 """
-    This file contains the logic of the main application.
+This file contains the logic of the main application.
 """
 
 import services
-from flask import Flask, request
-from flask_socketio import Namespace, SocketIO
+from flask import Flask, request  # type: ignore
+from flask_socketio import Namespace, SocketIO  # type: ignore
 from interface import WebsocketRequest
 from settings import env
 from utils.logger import logger_config
@@ -28,11 +28,15 @@ class ChatNamespace(Namespace):
             websocket_request = WebsocketRequest(**data)
         except Exception as exc:
             # FIXED: send error back to the correct client session
-            self.emit("message", {
-                "status_code": 400,
-                "message": "Invalid request format",
-                "error_message": str(exc),
-            }, room=request.sid)
+            self.emit(
+                "message",
+                {
+                    "status_code": 400,
+                    "message": "Invalid request format",
+                    "error_message": str(exc),
+                },
+                room=request.sid,
+            )
             return
 
         print("Incoming:", data)
@@ -49,11 +53,15 @@ class ChatNamespace(Namespace):
 
         except Exception as exc:
             logger.error("Error while processing message", exc_info=True)
-            self.emit("message", {
-                "status_code": 500,
-                "message": "Internal server error",
-                "error_message": str(exc),
-            }, room=request.sid)
+            self.emit(
+                "message",
+                {
+                    "status_code": 500,
+                    "message": "Internal server error",
+                    "error_message": str(exc),
+                },
+                room=request.sid,
+            )
 
     def on_disconnect(self):
         """Handle client disconnect"""
@@ -64,6 +72,6 @@ class ChatNamespace(Namespace):
 socketio.on_namespace(ChatNamespace("/chat"))
 
 if __name__ == "__main__":
-    import eventlet
-    import eventlet.wsgi
+    # import eventlet
+    # import eventlet.wsgi
     socketio.run(app, port=5000, host="0.0.0.0", debug=False)

@@ -15,11 +15,12 @@ class BaseGenerator(ABC):
     if env.LLM_PROVIDER == "AZURE":
         from openai import AzureOpenAI
 
-        client = AzureOpenAI(
-            api_key=env.LLM_API_KEY,
-            api_version=env.LLM_API_VERSION,
-            azure_endpoint=env.LLM_API_ENDPOINT,
-        )
+        # client = AzureOpenAI(
+        #     api_key=env.LLM_API_KEY,
+        #     api_version=env.LLM_API_VERSION,
+        #     azure_endpoint=env.LLM_API_ENDPOINT,
+        # )
+        client = OpenAI(api_key=env.LLM_API_KEY)
     elif env.LLM_PROVIDER == "OPENAI":
         from openai import OpenAI
 
@@ -74,6 +75,7 @@ class BaseGenerator(ABC):
 
     def _save_llm_result(self, question, result, query_id, **kwargs):
         """helper method to log all llm generated reponses"""
+        return
         model_name = result["model"]
         input_token_count = result["usage"]["prompt_tokens"]
         output_token_count = result["usage"]["completion_tokens"]
