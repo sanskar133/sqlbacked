@@ -14,6 +14,7 @@ interface Props {
 	size?: string;
 	error?: boolean;
 	helperText?: string;
+	type?: string;
 }
 
 /**
@@ -32,6 +33,7 @@ const CustomInput: React.FC<Props> = ({
 	size = 'small',
 	error = false,
 	helperText = '',
+	type = 'text',
 }) => {
 	return (
 		<Grid item container flexDirection={'column'} gap={'6px'}>
@@ -52,7 +54,7 @@ const CustomInput: React.FC<Props> = ({
 					fullWidth={fullWidth}
 					//@ts-ignore
 					size={size}
-					type="text"
+					type={type}
 					InputLabelProps={{ shrink: true }}
 					value={value}
 					onChange={(e) => {

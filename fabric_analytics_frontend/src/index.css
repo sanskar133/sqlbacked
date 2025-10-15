@@ -2,8 +2,8 @@ body {
 	overflow-x: hidden;
 	margin: 0px;
 	min-height: 100vh;
-	background-color: #c8cee3;
-	background-image: url('../src/assets/main-background.svg');
+	/* background-color: #c8cee3; */
+	/* background-image: url('../src/assets/main-background.svg'); */
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: 100% 100%;
