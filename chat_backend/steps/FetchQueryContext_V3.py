@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 emb_model = SentenceTransformer(
-    "nomic-ai/nomic-embed-text-v1.5",
+    # "nomic-ai/nomic-embed-text-v1.5",
+    "pkshatech/GLuCoSE-base-ja",
     trust_remote_code=True,
     truncate_dim=256,
     device="cpu",
