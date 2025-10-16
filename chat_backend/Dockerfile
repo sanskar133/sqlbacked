@@ -26,8 +26,8 @@ RUN python -m nltk.downloader stopwords punkt
 RUN pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 
-RUN python -c "from sentence_transformers import SentenceTransformer;\
-            SentenceTransformer('nomic-ai/nomic-embed-text-v1.5', trust_remote_code=True, truncate_dim=256, device='cpu')"
+# RUN python -c "from sentence_transformers import SentenceTransformer;\
+#             SentenceTransformer('nomic-ai/nomic-embed-text-v1.5', trust_remote_code=True, truncate_dim=256, device='cpu')"
 
 WORKDIR /chat_backend
 COPY . /chat_backend

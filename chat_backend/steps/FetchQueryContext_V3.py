@@ -7,7 +7,7 @@ import nltk
 import torch
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from sentence_transformers import SentenceTransformer, util
+from sentence_transformers import util
 from settings import env
 from steps.base import Step
 from dotenv import load_dotenv
@@ -15,18 +15,19 @@ from dotenv import load_dotenv
 load_dotenv()
 from databricks.vector_search.client import VectorSearchClient
 from utils.getdbx import dbxClient
+from databases.dbx.embeddings.dbx_embedding_model import DBXEmbeddingModel
 
 
 logger = logging.getLogger(__name__)
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-emb_model = SentenceTransformer(
-    # "nomic-ai/nomic-embed-text-v1.5",
-    "pkshatech/GLuCoSE-base-ja",
-    trust_remote_code=True,
-    truncate_dim=256,
-    device="cpu",
-)
+# emb_model = SentenceTransformer(
+#     # "nomic-ai/nomic-embed-text-v1.5",
+#     "pkshatech/GLuCoSE-base-ja",
+#     trust_remote_code=True,
+#     # truncate_dim=256,
+#     device="cpu",
+# )
 
 # nltk.download("punkt")
 # nltk.download("stopwords")
@@ -39,7 +40,8 @@ class FetchQueryContext(Step):
 
     def __init__(self, *args, **kwargs):
         logging.info(f"Initializing step {self}")
-        self.model = emb_model
+        # self.model = emb_model
+        self.embedder = DBXEmbeddingModel()
         self.vector_store = VectorSearchClient()
 
         # flag to control
@@ -56,6 +58,11 @@ class FetchQueryContext(Step):
     def __repr__(self):
         return "FetchQueryContext"
 
+    def embed_query(self, query):
+
+        query_embedding = self.embedder.get_embedding([query])
+        return query_embedding[0]
+
     def _get_relevant_tables(self, question: str, user_id: str, k: int = 15):
         stop_words = set(stopwords.words("english"))
         word_tokens = word_tokenize(question)
@@ -67,10 +74,9 @@ class FetchQueryContext(Step):
                 if not word_token.lower() in stop_words
             ]
         )
-        question_embedding = self.model.encode(
-            [filtered_question], convert_to_tensor=True
-        )
-        question_embedding = question_embedding[0].tolist()
+
+        question_embedding = self.embed_query(filtered_question)
+        # question_embedding = question_embedding[0].tolist()
 
         if user_id == "databricks_sql_test":
             return self.dbx_client.get_description_index(
@@ -92,9 +98,10 @@ class FetchQueryContext(Step):
 
         # generate embedding of question
         top_k = min(k, df.shape[0])
-        question_embedding = self.model.encode(
-            filtered_question, convert_to_tensor=True
-        )
+        # question_embedding = self.model.encode(
+        #     filtered_question, convert_to_tensor=True
+        # )
+        question_embedding = self.embed_query(filtered_question)
 
         cos_scores = util.cos_sim(
             question_embedding, torch.stack((df["embedding"].values.tolist()), dim=0)
@@ -118,10 +125,11 @@ class FetchQueryContext(Step):
                 if not word_token.lower() in stop_words
             ]
         )
-        question_embedding = self.model.encode(
-            [filtered_question], convert_to_tensor=True
-        )
-        question_embedding = question_embedding[0].tolist()
+        # question_embedding = self.model.encode(
+        #     [filtered_question], convert_to_tensor=True
+        # )
+        question_embedding = self.embed_query(filtered_question)
+        # question_embedding = question_embedding[0].tolist()
         if user_id == "databricks_sql_test":
             return self.dbx_client.get_query_index(
                 "workspace.default.questions", question_embedding, k
@@ -142,9 +150,10 @@ class FetchQueryContext(Step):
 
         # generate embedding of question
         top_k = min(k, df.shape[0])
-        question_embedding = self.model.encode(
-            filtered_question, convert_to_tensor=True
-        )
+        # question_embedding = self.model.encode(
+        #     filtered_question, convert_to_tensor=True
+        # )
+        question_embedding = self.embed_query(filtered_question)
 
         cos_scores = util.cos_sim(
             question_embedding, torch.stack((df["embedding"].values.tolist()), dim=0)

@@ -108,9 +108,11 @@ class DBXIngestMetaData:
 
         if ingest_tables:
             collection_name = f"{table}_index"
+            collection_name = "table_index"
             primary_key = "table_id"
         else:
             collection_name = f"{table}_columns_index"
+            collection_name = "column_index"
             primary_key = "column_id"
 
         return collection_name, primary_key
@@ -181,7 +183,7 @@ class DBXIngestMetaData:
 
         Args:
             tables: List of table names to ingest metadata for.
-            schemas: dictionary specifying schema details for each table.
+            schemas: dictionary specifying schema details for the index table.
 
             example:
             {"table_name": {
@@ -208,3 +210,24 @@ class DBXIngestMetaData:
         self.ingest_metadata(
             metadata=translated_table_data, schemas=schemas, ingest_tables=True
         )
+
+
+if __name__ == "__main__":
+
+    pipeline = DBXIngestMetaData(endpoint_name="dbx-vectorizer-endpoint")
+
+    tables = ["customers", "loan_payments"]  # sales,KPI etc..
+
+    schemas = {
+        table_name: {
+            "table_id": "string",
+            "column_id": "string",
+            "data_type": "string",
+            "name": "string",
+            "description": "string",
+            "translated_description": "string",
+        }
+        for table_name in tables
+    }
+
+    pipeline(tables=tables, schemas=schemas)
